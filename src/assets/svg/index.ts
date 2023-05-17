@@ -1,0 +1,15 @@
+export { ReactComponent as NikeIcon } from "./nike.svg";
+export { ReactComponent as HeartIcon } from "./heart.svg";
+export { ReactComponent as SearchIcon } from "./search.svg";
+export { ReactComponent as BagIcon } from "./bag.svg";
+export { ReactComponent as CancelIcon } from "./cancel.svg";
+export { ReactComponent as LeftRoundedIcon } from "./leftRounded.svg";
+export { ReactComponent as RightRoundedIcon } from "./rightRounded.svg";
+export { ReactComponent as LeftIcon } from "./left.svg";
+export { ReactComponent as RightIcon } from "./right.svg";
+export { ReactComponent as EyeIcon } from "./eye.svg";
+export { ReactComponent as FacebookIcon } from "./socials/facebook.svg";
+export { ReactComponent as InstagramIcon } from "./socials/instagram.svg";
+export { ReactComponent as TwitterIcon } from "./socials/twitter.svg";
+export { ReactComponent as YouTubeIcon } from "./socials/youTube.svg";
+export { ReactComponent as LocationIcon } from "./location.svg";
