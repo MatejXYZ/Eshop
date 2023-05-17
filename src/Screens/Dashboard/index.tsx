@@ -1,5 +1,5 @@
 import { FC, MouseEvent, useCallback, useRef } from "react";
-import { Box, Link, VStack } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import {
@@ -8,22 +8,7 @@ import {
   secondBarDisplayState,
 } from "../../atoms";
 
-import {
-  FirstBar,
-  SecondBar,
-  ThirdBar,
-  FourthBar,
-  FirstCarousel,
-  SecondCarousel,
-  ThirdCarousel,
-  FourthCarousel,
-  MonthBar,
-  FifthCarousel,
-  Footer,
-  BottomMenu,
-} from "./Components";
-
-import sneakerVideo from "../../assets/videos/sneaker.mp4";
+import { SecondBar, FirstCarousel, Footer } from "./Components";
 
 import { FIRST_BAR_HEIGHT } from "../../constants";
 
@@ -107,22 +92,10 @@ const Dashboard = () => {
         }}
       />
       <Box position="relative">
-        <FirstBar />
         <SecondBar />
-        <ThirdBar />
-        <FourthBar />
-        <Link>
-          <video src={sneakerVideo} autoPlay loop></video>
-        </Link>
         <VStack pl="3rem" pr="3.5rem">
           <FirstCarousel />
-          <SecondCarousel />
-          <ThirdCarousel />
-          <FourthCarousel />
-          <MonthBar />
-          <FifthCarousel />
         </VStack>
-        <BottomMenu />
         <Footer />
       </Box>
     </Box>
