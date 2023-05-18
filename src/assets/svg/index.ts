@@ -1,4 +1,4 @@
-export { ReactComponent as NikeIcon } from "./nike.svg";
+export { ReactComponent as LogoIcon } from "./logo.svg";
 export { ReactComponent as HeartIcon } from "./heart.svg";
 export { ReactComponent as SearchIcon } from "./search.svg";
 export { ReactComponent as BagIcon } from "./bag.svg";

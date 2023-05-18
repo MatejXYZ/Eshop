@@ -11,7 +11,7 @@ import colors from "../../../../colors";
 
 import { menuData } from "../../../../data";
 
-import { NikeIcon } from "../../../../assets/svg";
+import { LogoIcon } from "../../../../assets/svg";
 
 import { SearchBar, SearchResults } from "./Components";
 
@@ -84,7 +84,7 @@ const SecondBar = () => {
               h="100%"
             >
               <Box w="5rem" h="5rem">
-                <NikeIcon />
+                <LogoIcon />
               </Box>
             </Button>
           </Flex>
