@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, VStack } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import {
@@ -7,7 +7,8 @@ import {
   isSearchActiveState,
 } from "../../atoms";
 
-import { SecondBar, FirstCarousel, Footer } from "./Components";
+import { SecondBar, ResponsiveCarousel } from "./Components";
+import colors from "../../colors";
 
 type BackgroundEffectProps = {
   callback: () => void;
@@ -46,10 +47,10 @@ const Dashboard = () => {
       />
       <Box position="relative">
         <SecondBar />
-        <VStack pl="3rem" pr="3.5rem">
-          <FirstCarousel />
-        </VStack>
-        <Footer />
+        <Box w="full" h="3rem" bg={colors.gray} />
+        <ResponsiveCarousel />
+        {/* TEMP - hidden */}
+        {/* <Footer /> */}
       </Box>
     </Box>
   );
