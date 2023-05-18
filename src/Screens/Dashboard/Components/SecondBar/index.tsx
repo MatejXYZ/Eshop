@@ -3,7 +3,6 @@ import { useSetRecoilState, useRecoilValue } from "recoil";
 import { Box, Flex, Button } from "@chakra-ui/react";
 
 import {
-  secondBarDisplayState,
   isBackgroundEffectActiveState,
   isSearchActiveState,
 } from "../../../../atoms";
@@ -16,7 +15,7 @@ import { NikeIcon } from "../../../../assets/svg";
 
 import { SearchBar, SearchResults } from "./Components";
 
-import { FIRST_BAR_HEIGHT, SECOND_BAR_HEIGHT } from "../../../../constants";
+import { SECOND_BAR_HEIGHT } from "../../../../constants";
 
 const height = `${SECOND_BAR_HEIGHT}px`;
 
@@ -24,10 +23,6 @@ const SecondBar = () => {
   const setIsBackgroundEffectActive = useSetRecoilState(
     isBackgroundEffectActiveState
   );
-
-  const secondBarDisplay = useRecoilValue(secondBarDisplayState);
-
-  const { isFixed, isVisible } = secondBarDisplay;
 
   const isSearchActive = useRecoilValue(isSearchActiveState);
 
@@ -61,11 +56,7 @@ const SecondBar = () => {
         direction="column"
         overflow="hidden"
         zIndex={isSearchActive ? "4" : "2"}
-        position={isFixed ? "fixed" : "absolute"}
-        top={isFixed ? "0" : `${FIRST_BAR_HEIGHT}px`}
-        transform={`translateY(${
-          isSearchActive || isVisible ? "0" : `-${SECOND_BAR_HEIGHT}px`
-        })`}
+        position="fixed"
         transition="max-height, min-height, transform"
         transitionDuration={
           isSearchActive ? "0s, 0s, 0.2s" : "0.2s, 0.2s, 0.2s"

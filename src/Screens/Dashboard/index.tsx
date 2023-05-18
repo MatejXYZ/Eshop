@@ -1,16 +1,13 @@
-import { FC, MouseEvent, useCallback, useRef } from "react";
+import { FC } from "react";
 import { Box, VStack } from "@chakra-ui/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import {
   isBackgroundEffectActiveState,
   isSearchActiveState,
-  secondBarDisplayState,
 } from "../../atoms";
 
 import { SecondBar, FirstCarousel, Footer } from "./Components";
-
-import { FIRST_BAR_HEIGHT } from "../../constants";
 
 type BackgroundEffectProps = {
   callback: () => void;
@@ -39,52 +36,8 @@ const Dashboard = () => {
     isBackgroundEffectActiveState
   );
 
-  const setDisplaySecondBar = useSetRecoilState(secondBarDisplayState);
-
-  const ref = useRef<null | HTMLDivElement>(null);
-
-  let lastScrollTop = ref.current?.scrollTop ?? 0;
-
-  const onScroll = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      const newScrollTop = e.currentTarget.scrollTop;
-
-      let secondBarDisplay = {
-        isFixed: false,
-        isVisible: true,
-      };
-
-      if (newScrollTop > FIRST_BAR_HEIGHT) {
-        secondBarDisplay.isFixed = true;
-
-        if (newScrollTop < lastScrollTop) {
-          secondBarDisplay.isVisible = true;
-        } else {
-          secondBarDisplay.isVisible = false;
-        }
-      } else {
-        secondBarDisplay = {
-          isFixed: false,
-          isVisible: true,
-        };
-      }
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      lastScrollTop = newScrollTop;
-
-      setDisplaySecondBar(secondBarDisplay);
-    },
-    [lastScrollTop, setDisplaySecondBar]
-  );
-
   return (
-    <Box
-      w="100vw"
-      h="100vh"
-      overflow="hidden auto"
-      onScroll={onScroll}
-      ref={ref}
-    >
+    <Box w="100vw" h="100vh" overflow="hidden auto">
       <BackgroundEffect
         callback={() => {
           setIsSearchActive(false);
