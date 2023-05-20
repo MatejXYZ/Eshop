@@ -48,7 +48,24 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <ResponsiveCarousel />
+        <Box p="5% 15% 5% 5%" bg="steelblue">
+          <ResponsiveCarousel
+            items={[
+              {
+                id: 1,
+                url: "https://images.pexels.com/photos/11592804/pexels-photo-11592804.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+              },
+              {
+                id: 2,
+                url: "https://images.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+              },
+              {
+                id: 3,
+                url: "https://images.pexels.com/photos/3265460/pexels-photo-3265460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+              },
+            ]}
+          />
+        </Box>
         {/* TEMP - hidden */}
         {/* <Footer /> */}
       </Box>
