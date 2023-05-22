@@ -61,10 +61,11 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
     const onMouseUp = (e: globalThis.MouseEvent) => {
       setIsMouseDown(false);
 
-      for (let i = -items.length; i <= items.length; i++) {
+      for (let i = -items.length - 100; i <= items.length + 100; i++) {
         if (offset <= (i + 0.5) * itemWidth) {
-          if (Math.abs(i) > items.length - 1) setOffset(contentWidth);
-          else setOffset(i * itemWidth);
+          if (Math.abs(i) > items.length - 1) {
+            setOffset(contentWidth - (i > 0 ? items.length * itemWidth : 0));
+          } else setOffset(i * itemWidth);
           break;
         }
       }
