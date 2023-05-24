@@ -45,6 +45,10 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
 
   const [offset, setOffset] = useState(0);
 
+  const [isAnimated, setIsAnimated] = useState(false);
+
+  const [rowsToSkip, setRowsToSkip] = useState(0);
+
   useEffect(() => {
     const onMouseMove = (e: globalThis.MouseEvent) => {
       const x = e.clientX;
@@ -61,11 +65,16 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
     const onMouseUp = (e: globalThis.MouseEvent) => {
       setIsMouseDown(false);
 
+      setIsAnimated(true);
+
       for (let i = -items.length - 100; i <= items.length + 100; i++) {
         if (offset <= (i + 0.5) * itemWidth) {
           if (Math.abs(i) > items.length - 1) {
-            setOffset((i - items.length * (i < 0 ? -1 : 1)) * itemWidth);
+            setOffset(i * itemWidth);
+
+            setRowsToSkip(Math.floor(i / items.length));
           } else setOffset(i * itemWidth);
+
           break;
         }
       }
@@ -88,15 +97,24 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
         userSelect="none"
         outline="solid 3px blue"
       >
-        {[1, 2, 3, 4].map((content) => (
+        {[1, 2, 3, 4, 5].map((content) => (
           <Flex
             key={content}
             w="full"
             transform={`translateX(${offset - 2 * contentWidth}px)`}
+            transition={isAnimated ? "transform 0.5s" : "none"}
             onMouseDown={(e) => {
               setInitialX(e.clientX - offset);
 
               setIsMouseDown(true);
+
+              setIsAnimated(false);
+
+              if (rowsToSkip) {
+                setInitialX((prev) => prev + rowsToSkip * contentWidth);
+
+                setRowsToSkip(0);
+              }
             }}
           >
             {items.map((item, index) => {

@@ -48,27 +48,29 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <Box p="0 25%" bg="steelblue">
-          <ResponsiveCarousel
-            items={[
-              {
-                id: 1,
-                url: "https://images.pexels.com/photos/11592804/pexels-photo-11592804.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-              },
-              {
-                id: 2,
-                url: "https://images.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-              },
-              {
-                id: 3,
-                url: "https://images.pexels.com/photos/3265460/pexels-photo-3265460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-              },
-              {
-                id: 4,
-                url: "https://images.pexels.com/photos/3070989/pexels-photo-3070989.jpeg",
-              },
-            ]}
-          />
+        <Box display="flex" p="0 25%" justifyContent="center" bg="steelblue">
+          <Box w="full" maxW="10rem">
+            <ResponsiveCarousel
+              items={[
+                {
+                  id: 1,
+                  url: "https://images.pexels.com/photos/11592804/pexels-photo-11592804.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                },
+                {
+                  id: 2,
+                  url: "https://images.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                },
+                {
+                  id: 3,
+                  url: "https://images.pexels.com/photos/3265460/pexels-photo-3265460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                },
+                {
+                  id: 4,
+                  url: "https://images.pexels.com/photos/3070989/pexels-photo-3070989.jpeg",
+                },
+              ]}
+            />
+          </Box>
         </Box>
         {/* TEMP - hidden */}
         {/* <Footer /> */}
