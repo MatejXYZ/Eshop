@@ -58,8 +58,6 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
 
   const [isAnimated, setIsAnimated] = useState(false);
 
-  const [rowsToSkip, setRowsToSkip] = useState(0);
-
   useEffect(() => {
     const onMouseMove = (e: globalThis.MouseEvent) => {
       let newOffset = e.clientX - initialX;
@@ -128,12 +126,6 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
               setIsMouseDown(true);
 
               setIsAnimated(false);
-
-              if (rowsToSkip) {
-                setInitialX((prev) => prev + rowsToSkip * contentWidth);
-
-                setRowsToSkip(0);
-              }
             }}
           >
             {items.map((item, index) => {
