@@ -48,7 +48,7 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <Box display="flex" p="0 45%" justifyContent="center" bg="steelblue">
+        <Box display="flex" p="0 30%" justifyContent="center" bg="steelblue">
           <Box w="full">
             <ResponsiveCarousel
               items={[
