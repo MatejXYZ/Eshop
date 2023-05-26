@@ -6,9 +6,17 @@ type Item = {
   url: string;
 };
 
-type ResponsiveCarouselProps = { items: Item[] };
+type ResponsiveCarouselProps = {
+  items: Item[];
+  numberOfVisibleItems?: number;
+  isCentered?: boolean;
+};
 
-const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
+const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
+  items,
+  numberOfVisibleItems = 1.25,
+  isCentered = false,
+}) => {
   const visibleAreaRef = useRef<null | HTMLDivElement>(null);
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -25,7 +33,10 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
 
   const [visibleAreaWidth, setVisibleAreaWidth] = useState(0);
 
-  const itemWidth = useMemo(() => visibleAreaWidth * 0.8, [visibleAreaWidth]);
+  const itemWidth = useMemo(
+    () => visibleAreaWidth / numberOfVisibleItems,
+    [numberOfVisibleItems, visibleAreaWidth]
+  );
 
   const contentWidth = useMemo(
     () => itemWidth * items.length,
@@ -51,15 +62,27 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
 
   useEffect(() => {
     const onMouseMove = (e: globalThis.MouseEvent) => {
-      const x = e.clientX;
+      let newOffset = e.clientX - initialX;
 
-      if (isMouseDown) setOffset(x - initialX);
+      if (newOffset > contentWidth) {
+        newOffset = 0;
+
+        setInitialX(e.clientX - offset);
+      } else if (newOffset < -contentWidth) {
+        newOffset = 0;
+
+        setInitialX(e.clientX - offset);
+      }
+
+      setOffset(newOffset);
     };
 
-    window.addEventListener("mousemove", onMouseMove);
+    if (isMouseDown) {
+      window.addEventListener("mousemove", onMouseMove);
 
-    return () => window.removeEventListener("mousemove", onMouseMove);
-  }, [initialX, isMouseDown]);
+      return () => window.removeEventListener("mousemove", onMouseMove);
+    }
+  }, [contentWidth, initialX, isMouseDown, offset, visibleAreaWidth]);
 
   useEffect(() => {
     const onMouseUp = (e: globalThis.MouseEvent) => {
@@ -69,11 +92,7 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
 
       for (let i = -items.length - 100; i <= items.length + 100; i++) {
         if (offset <= (i + 0.5) * itemWidth) {
-          if (Math.abs(i) > items.length - 1) {
-            setOffset(i * itemWidth);
-
-            setRowsToSkip(Math.floor(i / items.length));
-          } else setOffset(i * itemWidth);
+          setOffset(i * itemWidth);
 
           break;
         }
@@ -97,7 +116,7 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({ items }) => {
         userSelect="none"
         outline="solid 3px blue"
       >
-        {[1, 2, 3, 4, 5].map((content) => (
+        {[1, 2, 3, 4].map((content) => (
           <Flex
             key={content}
             w="full"
