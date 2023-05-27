@@ -38,6 +38,8 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
     [numberOfVisibleItems, visibleAreaWidth]
   );
 
+  const initialOffset = isCentered ? (visibleAreaWidth - itemWidth) / 2 : 0;
+
   const contentWidth = useMemo(
     () => itemWidth * items.length,
     [itemWidth, items.length]
@@ -120,29 +122,23 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
     }
 
     return () => window.removeEventListener("mouseup", onMouseUp);
-  }, [
-    animatedOffset,
-    contentWidth,
-    initialX,
-    isMouseDown,
-    itemWidth,
-    items.length,
-    offset,
-  ]);
+  }, [animatedOffset, initialX, isMouseDown, itemWidth, items.length, offset]);
 
   return (
     <Flex ref={visibleAreaRef} w="full" overflow="hidden">
       <Flex
         w={`${items.length * itemWidth}px`}
         userSelect="none"
-        transition={"transform 0.5s"}
+        transition={"transform 0.45s"}
         transform={`translateX(${animatedOffset}px)`}
       >
         {[1, 2, 3].map((content) => (
           <Flex
             key={content}
             w="full"
-            transform={`translateX(${unanimatedOffset - 2 * contentWidth}px)`}
+            transform={`translateX(${
+              unanimatedOffset - 2 * contentWidth + initialOffset
+            }px)`}
             onMouseDown={(e) => {
               if (e.button !== 0) return;
 
@@ -158,7 +154,6 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
                   w={`${itemWidth}px`}
                   h={`${itemWidth}px`}
                   p="0 0.25rem"
-                  position="relative"
                 >
                   <Image
                     id={`image-${id}`}

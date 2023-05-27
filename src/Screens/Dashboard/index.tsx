@@ -48,9 +48,10 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <Box display="flex" p="0 20%" justifyContent="center">
+        <Box display="flex" p="0 40%" justifyContent="center">
           <Box w="full">
             <ResponsiveCarousel
+              isCentered
               items={[
                 {
                   id: 1,
