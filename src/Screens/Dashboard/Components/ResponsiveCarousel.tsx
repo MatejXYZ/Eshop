@@ -97,6 +97,8 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
 
   useEffect(() => {
     const onMouseUp = (e: globalThis.MouseEvent) => {
+      if (e.button !== 0) return;
+
       setIsMouseDown(false);
 
       for (let i = -items.length; i <= items.length; i++) {
@@ -142,6 +144,8 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
             w="full"
             transform={`translateX(${unanimatedOffset - 2 * contentWidth}px)`}
             onMouseDown={(e) => {
+              if (e.button !== 0) return;
+
               setInitialX(e.clientX - offset);
 
               setIsMouseDown(true);
