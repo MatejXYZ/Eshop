@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 type Item = {
   id: number;
@@ -54,28 +54,38 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
 
   const [isMouseDown, setIsMouseDown] = useState(false);
 
-  const [offset, setOffset] = useState(0);
+  const [unanimatedOffset, setUnanimatedOffset] = useState(0);
 
-  const [isAnimated, setIsAnimated] = useState(false);
+  const [animatedOffset, setAnimatedOffset] = useState(0);
+
+  const offset = unanimatedOffset + animatedOffset;
+
+  const setOffset = ({
+    animated,
+    unanimated,
+  }: {
+    animated: number;
+    unanimated: number;
+  }) => {
+    setAnimatedOffset(animated);
+
+    setUnanimatedOffset(unanimated);
+  };
 
   useEffect(() => {
     const onMouseMove = (e: globalThis.MouseEvent) => {
-      setIsAnimated(false);
-
       let newOffset = e.clientX - initialX;
 
-      if (newOffset > contentWidth - 2 * itemWidth) {
-        console.info("etst");
-        newOffset = -2 * itemWidth;
-
-        setInitialX(e.clientX - offset);
-      } else if (newOffset < -contentWidth + 2 * itemWidth) {
-        newOffset = 2 * itemWidth;
+      if (Math.abs(newOffset) > (items.length - 2) * itemWidth) {
+        newOffset = 2 * itemWidth * (newOffset < 0 ? 1 : -1);
 
         setInitialX(e.clientX - offset);
       }
 
-      setOffset(newOffset);
+      setOffset({
+        unanimated: newOffset - animatedOffset,
+        animated: animatedOffset,
+      });
     };
 
     if (isMouseDown) {
@@ -83,74 +93,87 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
 
       return () => window.removeEventListener("mousemove", onMouseMove);
     }
-  }, [contentWidth, initialX, isMouseDown, itemWidth, offset]);
+  }, [animatedOffset, initialX, isMouseDown, itemWidth, items.length, offset]);
 
   useEffect(() => {
     const onMouseUp = (e: globalThis.MouseEvent) => {
       setIsMouseDown(false);
 
-      setIsAnimated(true);
-
-      for (let i = -items.length - 100; i <= items.length + 100; i++) {
+      for (let i = -items.length; i <= items.length; i++) {
         if (offset <= (i + 0.5) * itemWidth) {
-          setOffset(i * itemWidth);
+          const dragLength = e.clientX - initialX;
+
+          setOffset({
+            unanimated: dragLength - animatedOffset,
+            animated: animatedOffset - dragLength + i * itemWidth,
+          });
 
           break;
         }
       }
     };
 
-    window.addEventListener("mouseup", onMouseUp);
+    if (isMouseDown) {
+      window.addEventListener("mouseup", onMouseUp);
+    }
 
     return () => window.removeEventListener("mouseup", onMouseUp);
-  }, [contentWidth, itemWidth, items.length, offset]);
+  }, [
+    animatedOffset,
+    contentWidth,
+    initialX,
+    isMouseDown,
+    itemWidth,
+    items.length,
+    offset,
+  ]);
 
   return (
-    <Flex
-      ref={visibleAreaRef}
-      outline="solid 5px orange"
-      w="full"
-      overflow="hidden"
-    >
+    <Flex ref={visibleAreaRef} w="full" overflow="hidden">
       <Flex
         w={`${items.length * itemWidth}px`}
         userSelect="none"
-        outline="solid 3px blue"
+        transition={"transform 0.5s"}
+        transform={`translateX(${animatedOffset}px)`}
       >
         {[1, 2, 3].map((content) => (
           <Flex
             key={content}
             w="full"
-            transform={`translateX(${offset - 2 * contentWidth}px)`}
-            transition={isAnimated ? "transform 0.5s" : "none"}
+            transform={`translateX(${unanimatedOffset - 2 * contentWidth}px)`}
             onMouseDown={(e) => {
               setInitialX(e.clientX - offset);
 
               setIsMouseDown(true);
             }}
           >
-            {items.map((item, index) => {
+            {items.map(({ id, url }) => {
               return (
                 <Flex
-                  key={item.id}
+                  key={id}
                   w={`${itemWidth}px`}
                   h={`${itemWidth}px`}
                   p="0 0.25rem"
+                  position="relative"
                 >
-                  <Flex
-                    fontSize="2rem"
-                    fontWeight="bold"
-                    position="relative"
-                    bg={`url("${item.url}")`}
-                    backgroundSize="cover"
-                    w="full"
-                    h="full"
-                    align="center"
-                    justify="center"
-                    color="blue"
-                  >
-                    {index + 1}
-                  </Flex>
+                  <Box flex="1" id="media-container">
+                    <img
+                      id={`image-${id}`}
+                      src={url}
+                      draggable={false}
+                      alt=""
+                      onError={() => {
+                        const video = document.createElement("video");
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.src = url;
+                        video.addEventListener("error", () => {});
+                        const target = document.getElementById(`image-${id}`);
+                        target?.insertAdjacentElement("beforebegin", video);
+                        target?.remove();
+                      }}
+                    />
+                  </Box>
                 </Flex>
               );
             })}

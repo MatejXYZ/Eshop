@@ -48,17 +48,17 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <Box display="flex" p="0 30%" justifyContent="center" bg="steelblue">
+        <Box display="flex" p="0 45%" justifyContent="center">
           <Box w="full">
             <ResponsiveCarousel
               items={[
                 {
                   id: 1,
-                  url: "https://images.pexels.com/photos/11592804/pexels-photo-11592804.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                  url: "https://v.ftcdn.net/05/73/48/28/240_F_573482848_v4lvfzewWuHMVJHoZjWff5OgY4eRYbzT_ST.mp4",
                 },
                 {
                   id: 2,
-                  url: "https://images.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                  url: "https://imagdes.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                 },
                 {
                   id: 3,
