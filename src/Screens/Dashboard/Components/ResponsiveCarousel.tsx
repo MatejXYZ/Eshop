@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex, Image } from "@chakra-ui/react";
 
 type Item = {
   id: number;
@@ -156,24 +156,28 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
                   p="0 0.25rem"
                   position="relative"
                 >
-                  <Box flex="1" id="media-container">
-                    <img
-                      id={`image-${id}`}
-                      src={url}
-                      draggable={false}
-                      alt=""
-                      onError={() => {
-                        const video = document.createElement("video");
-                        video.autoplay = true;
-                        video.loop = true;
-                        video.src = url;
-                        video.addEventListener("error", () => {});
-                        const target = document.getElementById(`image-${id}`);
-                        target?.insertAdjacentElement("beforebegin", video);
-                        target?.remove();
-                      }}
-                    />
-                  </Box>
+                  <Image
+                    id={`image-${id}`}
+                    src={url}
+                    draggable={false}
+                    alt=""
+                    objectFit="cover"
+                    flex="1"
+                    onError={() => {
+                      const video = document.createElement("video");
+                      video.autoplay = true;
+                      video.loop = true;
+                      video.src = url;
+                      video.addEventListener("error", () => {});
+                      video.setAttribute(
+                        "style",
+                        "object-fit: cover; display: flex; flex: 1"
+                      );
+                      const target = document.getElementById(`image-${id}`);
+                      target?.insertAdjacentElement("beforebegin", video);
+                      target?.remove();
+                    }}
+                  />
                 </Flex>
               );
             })}

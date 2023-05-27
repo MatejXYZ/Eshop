@@ -48,7 +48,7 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <Box display="flex" p="0 45%" justifyContent="center">
+        <Box display="flex" p="0 20%" justifyContent="center">
           <Box w="full">
             <ResponsiveCarousel
               items={[
@@ -58,7 +58,7 @@ const Dashboard = () => {
                 },
                 {
                   id: 2,
-                  url: "https://imagdes.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                  url: "https://images.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                 },
                 {
                   id: 3,
