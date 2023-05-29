@@ -52,22 +52,27 @@ const Dashboard = () => {
           <Box w="full">
             <ResponsiveCarousel
               isCentered
+              displayNavigationButtons
               items={[
                 {
-                  id: 1,
+                  id: 54646,
                   url: "https://v.ftcdn.net/05/73/48/28/240_F_573482848_v4lvfzewWuHMVJHoZjWff5OgY4eRYbzT_ST.mp4",
                 },
                 {
-                  id: 2,
+                  id: 23,
                   url: "https://images.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                 },
                 {
-                  id: 3,
+                  id: 1345,
                   url: "https://images.pexels.com/photos/3265460/pexels-photo-3265460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                 },
                 {
-                  id: 4,
+                  id: 2345,
                   url: "https://images.pexels.com/photos/3070989/pexels-photo-3070989.jpeg",
+                },
+                {
+                  id: 435,
+                  url: "https://v.ftcdn.net/05/28/31/08/240_F_528310819_DXHCd0hRGoyNQA32oCUR0N4O7fY5ibES_ST.mp4",
                 },
               ]}
             />
