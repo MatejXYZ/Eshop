@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { Box } from "@chakra-ui/react";
+import { FC, useEffect, useMemo, useState } from "react";
+import { Box, Spinner } from "@chakra-ui/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import {
@@ -7,8 +7,20 @@ import {
   isSearchActiveState,
 } from "../../atoms";
 
-import { SecondBar, ResponsiveCarousel } from "./Components";
+import { SecondBar, Carousel } from "./Components";
 import colors from "../../colors";
+import doesMediaUrlWork from "../../utils/doesMediaUrlWork";
+import findMediaType from "../../utils/findMediaType";
+
+const URLS = [
+  "https://v.ftcdn.net/05/73/48/28/240_F_573482848_v4lvfzewWuHMVJHoZjWff5OgY4eRYbzT_ST.mp4",
+  "https://images.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/3265460/pexels-photo-3265460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/3070989/pexels-photo-3070989.jpeg",
+  "https://v.ftcdn.net/05/28/31/08/240_F_528310819_DXHCd0hRGoyNQA32oCUR0N4O7fY5ibES_ST.mp4",
+  "https://images.pexels.com/photos/16327878/pexels-photo-16327878/free-photo-of-aerial-photo-of-a-mountain-lake.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+  "https://images.pexels.com/photos/15374845/pexels-photo-15374845/free-photo-of-koala-in-a-tree-in-australian-bush.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+];
 
 type BackgroundEffectProps = {
   callback: () => void;
@@ -37,6 +49,36 @@ const Dashboard = () => {
     isBackgroundEffectActiveState
   );
 
+  useEffect(() => {
+    if (!urls) {
+      let checkedUrls: string[] = [];
+
+      const asyncFn = async () => {
+        for await (const url of URLS) {
+          const doesUrlWork = await doesMediaUrlWork({
+            url,
+            type: findMediaType(url),
+          });
+
+          if (doesUrlWork) {
+            checkedUrls.push(url);
+          }
+        }
+
+        setUrls(checkedUrls);
+      };
+
+      void asyncFn();
+    }
+  });
+
+  const [urls, setUrls] = useState<null | string[]>(null);
+
+  const urlItems = useMemo(
+    () => urls?.map((item, index) => ({ id: index, url: item })),
+    [urls]
+  );
+
   return (
     <Box w="100vw" h="100vh" overflow="hidden auto">
       <BackgroundEffect
@@ -50,32 +92,13 @@ const Dashboard = () => {
         <Box w="full" h="3rem" bg={colors.gray} />
         <Box display="flex" p="0 40%" justifyContent="center">
           <Box w="full">
-            <ResponsiveCarousel
-              isCentered
-              displayNavigationButtons
-              items={[
-                {
-                  id: 54646,
-                  url: "https://v.ftcdn.net/05/73/48/28/240_F_573482848_v4lvfzewWuHMVJHoZjWff5OgY4eRYbzT_ST.mp4",
-                },
-                {
-                  id: 23,
-                  url: "https://images.pexels.com/photos/326231/pexels-photo-326231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                },
-                {
-                  id: 1345,
-                  url: "https://images.pexels.com/photos/3265460/pexels-photo-3265460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                },
-                {
-                  id: 2345,
-                  url: "https://images.pexels.com/photos/3070989/pexels-photo-3070989.jpeg",
-                },
-                {
-                  id: 435,
-                  url: "https://v.ftcdn.net/05/28/31/08/240_F_528310819_DXHCd0hRGoyNQA32oCUR0N4O7fY5ibES_ST.mp4",
-                },
-              ]}
-            />
+            {urlItems ? (
+              <Carousel isCentered displayNavigationButtons items={urlItems} />
+            ) : (
+              <>
+                <Spinner />
+              </>
+            )}
           </Box>
         </Box>
         {/* TEMP - hidden */}

@@ -8,22 +8,22 @@ type Item = {
   url: string;
 };
 
-type ResponsiveCarouselProps = {
+type CarouselProps = {
   items: Item[];
   numberOfVisibleItems?: number;
   isCentered?: boolean;
   displayNavigationButtons?: boolean;
-  NavigationButton?: FC;
-  RightNavigationButton?: FC;
+  // NavigationButton?: FC;
+  // RightNavigationButton?: FC;
 };
 
-const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
+const Carousel: FC<CarouselProps> = ({
   items,
   numberOfVisibleItems = 1.25,
   isCentered = false,
   displayNavigationButtons,
-  NavigationButton: UserNavigationButton,
-  RightNavigationButton: UserRightNavigationButton,
+  // NavigationButton: UserNavigationButton,
+  // RightNavigationButton: UserRightNavigationButton,
 }) => {
   const visibleAreaRef = useRef<null | HTMLDivElement>(null);
 
@@ -298,4 +298,4 @@ const ResponsiveCarousel: FC<ResponsiveCarouselProps> = ({
   );
 };
 
-export default ResponsiveCarousel;
+export default Carousel;
