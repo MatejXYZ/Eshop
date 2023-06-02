@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { Box, Spinner } from "@chakra-ui/react";
+import { Box, Flex, Spinner } from "@chakra-ui/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import {
@@ -22,6 +22,43 @@ const URLS = [
   "https://images.pexels.com/photos/16327878/pexels-photo-16327878/free-photo-of-aerial-photo-of-a-mountain-lake.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   "https://images.pexels.com/photos/15374845/pexels-photo-15374845/free-photo-of-koala-in-a-tree-in-australian-bush.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
 ];
+
+const getWorkingUrls: (urls: string[]) => Promise<string[]> = async (urls) => {
+  return new Promise((resolve) => {
+    const checkedUrls: { fail: string[]; success: string[] } = {
+      fail: [],
+      success: [],
+    };
+
+    urls.forEach(async (url) => {
+      const doesUrlWork = await doesMediaUrlWork({
+        url,
+        type: findMediaType(url),
+      });
+
+      doesUrlWork ? checkedUrls.success.push(url) : checkedUrls.fail.push(url);
+
+      if (checkedUrls.fail.length + checkedUrls.success.length === urls.length)
+        resolve(checkedUrls.success);
+    });
+  });
+};
+
+const useWorkingUrls = (urls: string[]) => {
+  const [workingUrls, setWorkingUrls] = useState<string[] | null>(null);
+
+  useEffect(() => {
+    const asyncFn = async () => {
+      const lWorkingUrls = await getWorkingUrls(urls);
+
+      setWorkingUrls(lWorkingUrls);
+    };
+
+    void asyncFn();
+  }, [urls]);
+
+  return { urls: workingUrls };
+};
 
 type BackgroundEffectProps = {
   callback: () => void;
@@ -50,33 +87,10 @@ const Dashboard = () => {
     isBackgroundEffectActiveState
   );
 
-  useEffect(() => {
-    if (!urls) {
-      let checkedUrls: string[] = [];
-
-      const asyncFn = async () => {
-        for await (const url of URLS) {
-          const doesUrlWork = await doesMediaUrlWork({
-            url,
-            type: findMediaType(url),
-          });
-
-          if (doesUrlWork) {
-            checkedUrls.push(url);
-          }
-        }
-
-        setUrls(checkedUrls);
-      };
-
-      void asyncFn();
-    }
-  });
-
-  const [urls, setUrls] = useState<null | string[]>(null);
+  const { urls } = useWorkingUrls(URLS);
 
   const urlItems = useMemo(
-    () => urls?.map((item, index) => ({ id: index, url: item })),
+    () => urls?.map((item, index) => ({ id: index, url: item })) ?? [],
     [urls]
   );
 
@@ -91,17 +105,13 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <Box display="flex" p="0 40%" justifyContent="center">
-          <Box w="full">
-            {urlItems ? (
-              <Carousel isCentered displayNavigationButtons items={urlItems} />
-            ) : (
-              <Spinner />
-            )}
-          </Box>
-        </Box>
-        {/* TEMP - hidden */}
-        {/* <Footer /> */}
+        <Flex p="0 40%" justifyContent="center">
+          {urlItems.length ? (
+            <Carousel items={urlItems} isCentered displayNavigationButtons />
+          ) : (
+            <Spinner />
+          )}
+        </Flex>
       </Box>
     </Box>
   );
