@@ -96,9 +96,7 @@ const Dashboard = () => {
             {urlItems ? (
               <Carousel isCentered displayNavigationButtons items={urlItems} />
             ) : (
-              <>
-                <Spinner />
-              </>
+              <Spinner />
             )}
           </Box>
         </Box>
