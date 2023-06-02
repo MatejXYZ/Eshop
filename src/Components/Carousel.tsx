@@ -1,348 +1,300 @@
-import {
-  FC,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Box, Flex, VStack } from "@chakra-ui/react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Box, Flex, Image } from "@chakra-ui/react";
 
-import colors from "../colors";
+import { LeftRoundedIcon } from "../assets/svg";
 
-import { RightRoundedIcon, LeftRoundedIcon } from "../assets/svg";
-import Title from "./Title";
-
-type CarouselItem = {
+type Item = {
   id: number;
-  img: string;
-  title: string;
+  url: string;
 };
 
 type CarouselProps = {
-  data: CarouselItem[];
-  itemWidth?: number;
-  title?: string;
+  items: Item[];
+  numberOfVisibleItems?: number;
+  isCentered?: boolean;
+  displayNavigationButtons?: boolean;
+  // NavigationButton?: FC;
+  // RightNavigationButton?: FC;
 };
 
 const Carousel: FC<CarouselProps> = ({
-  data: initialItems,
-  itemWidth = 520,
-  title,
+  items,
+  numberOfVisibleItems = 1.25,
+  isCentered = false,
+  displayNavigationButtons,
+  // NavigationButton: UserNavigationButton,
+  // RightNavigationButton: UserRightNavigationButton,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const visibleAreaRef = useRef<null | HTMLDivElement>(null);
 
-  const [isDragging, setIsDragging] = useState(false);
-
-  const [startingX, setStartingX] = useState(0);
-
-  const [endingX, setEndingX] = useState(itemWidth);
-
-  const [x, setX] = useState(itemWidth);
-
-  const [animatedX, setAnimatedX] = useState(0);
-
-  const [currentItem, setCurrentItem] = useState(initialItems.length);
-
-  const [movementXAfterMouseDown, setMovementXAfterMouseDown] = useState({
-    highest: 0,
-    count: 0,
-  });
-
-  const onMouseDown = useCallback((e: MouseEvent<HTMLDivElement>) => {
-    setIsDragging(true);
-
-    setMovementXAfterMouseDown({ highest: 0, count: 0 });
-
-    setStartingX(e.screenX);
-  }, []);
-
-  const onMove = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      if (isDragging) {
-        setMovementXAfterMouseDown((prev) => ({
-          highest:
-            Math.abs(e.movementX) > Math.abs(prev.highest)
-              ? e.movementX
-              : prev.highest,
-          count: prev.count + 1,
-        }));
-
-        setX(endingX + e.screenX - startingX);
-      }
-    },
-    [endingX, isDragging, startingX]
-  );
-
-  const [carouselItems, setCarouselItems] = useState(initialItems);
-
-  type EndDragParams =
-    | { initial?: boolean; container?: DOMRect; slide?: "left" | "right" }
-    | undefined;
-
-  const endDrag = useCallback(
-    (props: EndDragParams) => {
-      let { initial, container, slide } = props ?? {};
-
-      if (initial || isDragging || slide) {
-        let newX = 0;
-
-        let offsetX = 0;
-
-        container = container || containerRef.current?.getBoundingClientRect();
-
-        if (container) {
-          const containerMiddle = container.width / 2;
-
-          if (
-            slide ||
-            (Math.abs(movementXAfterMouseDown.highest) > 5 &&
-              movementXAfterMouseDown.count < 10)
-          ) {
-            const direction = slide
-              ? slide === "left"
-                ? -1
-                : 1
-              : movementXAfterMouseDown.highest > 0
-              ? -1
-              : 1;
-
-            const targetIndex =
-              carouselItems.findIndex((item) => item.id === currentItem) +
-              direction;
-
-            newX = containerMiddle - targetIndex * itemWidth - itemWidth / 2;
-
-            setCurrentItem(carouselItems[targetIndex].id);
-          } else {
-            let targetMiddle = itemWidth / 2;
-            let targetIndex = 0;
-
-            for (let i = 1; i < carouselItems.length; i++) {
-              const currentTargetMiddle = itemWidth * i + itemWidth / 2;
-
-              if (
-                Math.abs(
-                  currentTargetMiddle + x + animatedX - containerMiddle
-                ) < Math.abs(targetMiddle + x + animatedX - containerMiddle)
-              ) {
-                targetMiddle = currentTargetMiddle;
-                targetIndex = i;
-              }
-            }
-
-            setCurrentItem(carouselItems[targetIndex].id);
-
-            newX = containerMiddle - targetMiddle;
-          }
-
-          if (currentItem > carouselItems.slice(-initialItems.length)[0].id) {
-            let newItems: CarouselItem[] = [];
-
-            const lastId = carouselItems[carouselItems.length - 1].id;
-
-            initialItems.forEach((item, index) => {
-              newItems.push({
-                ...item,
-                id: lastId + index + 1,
-              });
-            });
-
-            setCarouselItems([...carouselItems, ...newItems]);
-          }
-
-          if (currentItem <= carouselItems[0].id + initialItems.length) {
-            let newItems: CarouselItem[] = [];
-
-            const firstId = carouselItems[0].id;
-
-            initialItems.forEach((item, index, arr) => {
-              newItems.push({
-                ...item,
-                id: firstId + index - arr.length,
-              });
-            });
-
-            setCarouselItems([...newItems, ...carouselItems]);
-
-            offsetX = -initialItems.length * itemWidth;
-          }
-
-          setX(x + offsetX);
-          setEndingX(x + offsetX);
-          setAnimatedX(newX - x);
-        }
-
-        setIsDragging(false);
-      }
-    },
-    [
-      animatedX,
-      carouselItems,
-      currentItem,
-      initialItems,
-      isDragging,
-      itemWidth,
-      movementXAfterMouseDown.count,
-      movementXAfterMouseDown.highest,
-      x,
-    ]
-  );
-
-  const [isPositionInitialized, setIsPositionInitialized] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    if (!isPositionInitialized) {
-      const interval = setInterval(() => {
-        const container = containerRef.current?.getBoundingClientRect();
+    const onResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-        if (container) {
-          endDrag({ initial: true, container });
+    window.addEventListener("resize", onResize);
 
-          setIsPositionInitialized(true);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-          clearInterval(interval);
-        }
-      }, 500);
+  const [visibleAreaWidth, setVisibleAreaWidth] = useState(0);
 
-      return () => clearInterval(interval);
+  const itemWidth = useMemo(
+    () => visibleAreaWidth / numberOfVisibleItems,
+    [numberOfVisibleItems, visibleAreaWidth]
+  );
+
+  const initialOffset = isCentered ? (visibleAreaWidth - itemWidth) / 2 : 0;
+
+  const contentWidth = useMemo(
+    () => itemWidth * items.length,
+    [itemWidth, items.length]
+  );
+
+  useEffect(() => {
+    const lVisibleAreaWidth =
+      visibleAreaRef.current?.getBoundingClientRect().width;
+
+    if (lVisibleAreaWidth) setVisibleAreaWidth(lVisibleAreaWidth);
+  }, [windowWidth]);
+
+  const [initialX, setInitialX] = useState(0);
+
+  const [isMouseDown, setIsMouseDown] = useState(false);
+
+  const [unanimatedOffset, setUnanimatedOffset] = useState(0);
+
+  const [animatedOffset, setAnimatedOffset] = useState(0);
+
+  const [mouseMovement, setMouseMovement] = useState<null | {
+    count: number;
+    value: number;
+    direction: "left" | "right";
+  }>({ count: 0, value: 0, direction: "right" });
+
+  const offset = unanimatedOffset + animatedOffset;
+
+  const setOffset = ({
+    animated,
+    unanimated,
+  }: {
+    animated: number;
+    unanimated: number;
+  }) => {
+    setAnimatedOffset(animated);
+
+    setUnanimatedOffset(unanimated);
+  };
+
+  const slideLeft = useCallback(() => {
+    setOffset({
+      unanimated: unanimatedOffset,
+      animated: animatedOffset + itemWidth,
+    });
+  }, [animatedOffset, itemWidth, unanimatedOffset]);
+
+  const slideRight = useCallback(() => {
+    setOffset({
+      unanimated: unanimatedOffset,
+      animated: animatedOffset - itemWidth,
+    });
+  }, [animatedOffset, itemWidth, unanimatedOffset]);
+
+  useEffect(() => {
+    if (!isMouseDown && Math.abs(offset) > (items.length - 2) * itemWidth) {
+      setOffset({
+        unanimated: itemWidth * (offset < 0 ? 1 : -1) - animatedOffset,
+        animated: animatedOffset,
+      });
     }
-  }, [endDrag, isPositionInitialized]);
+  }, [animatedOffset, isMouseDown, itemWidth, items.length, offset]);
+
+  useEffect(() => {
+    const onMouseMove = (e: globalThis.MouseEvent) => {
+      setMouseMovement((prev) => {
+        const lMovementX = Math.abs(e.movementX);
+
+        if (
+          prev &&
+          prev.value + lMovementX < itemWidth / 2 &&
+          prev.count < itemWidth / 50
+        ) {
+          if (lMovementX < 1) return prev;
+
+          return {
+            count: prev.count + 1,
+            value: prev.value + lMovementX,
+            direction: e.movementX > 0 ? "left" : "right",
+          };
+        }
+
+        return null;
+      });
+
+      let newOffset = e.clientX - initialX;
+
+      if (Math.abs(newOffset) > (items.length - 2) * itemWidth) {
+        newOffset = 2 * itemWidth * (newOffset < 0 ? 1 : -1);
+
+        setInitialX(e.clientX - offset);
+      }
+
+      setOffset({
+        unanimated: newOffset - animatedOffset,
+        animated: animatedOffset,
+      });
+    };
+
+    if (isMouseDown) {
+      window.addEventListener("mousemove", onMouseMove);
+
+      return () => window.removeEventListener("mousemove", onMouseMove);
+    }
+  }, [animatedOffset, initialX, isMouseDown, itemWidth, items.length, offset]);
+
+  useEffect(() => {
+    const onMouseUp = (e: globalThis.MouseEvent) => {
+      if (e.button !== 0) return;
+
+      let lInitialX = initialX;
+
+      let newOffset = offset;
+
+      setIsMouseDown(false);
+
+      setMouseMovement({ count: 0, value: 0, direction: "right" });
+
+      if (mouseMovement?.value) {
+        if (offset > 0 && initialX > contentWidth) lInitialX -= contentWidth;
+        else if (offset < 0 && initialX < itemWidth) lInitialX += contentWidth;
+
+        newOffset =
+          mouseMovement.direction === "right"
+            ? offset - itemWidth
+            : offset + itemWidth;
+      }
+
+      for (let i = -items.length; i <= items.length; i++) {
+        if (newOffset <= (i + 0.5) * itemWidth) {
+          const dragLength = e.clientX - lInitialX;
+
+          setOffset({
+            unanimated: dragLength - animatedOffset,
+            animated: animatedOffset - dragLength + i * itemWidth,
+          });
+
+          break;
+        }
+      }
+    };
+
+    if (isMouseDown) {
+      window.addEventListener("mouseup", onMouseUp);
+    }
+
+    return () => window.removeEventListener("mouseup", onMouseUp);
+  }, [
+    animatedOffset,
+    contentWidth,
+    initialX,
+    isMouseDown,
+    itemWidth,
+    items.length,
+    mouseMovement,
+    offset,
+  ]);
 
   return (
-    <VStack w="full" align="start" spacing="0.25rem">
-      <Title>{title}</Title>
-      <Box p="16px 0 12px 0" w="full" position="relative">
-        <Box
-          position="absolute"
-          left="0"
-          top="16px"
-          h="500px"
-          display="flex"
-          alignItems="center"
-          justifyContent="flex-end"
-          width="172px"
-        >
-          <Box
-            bg={colors.white}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            w="40px"
-            h="40px"
-            zIndex="1"
-            rounded="full"
-            cursor="pointer"
-            onClick={() => {
-              endDrag({ slide: "left" });
-            }}
-          >
-            <LeftRoundedIcon width={20} height={20} />
-          </Box>
-        </Box>
-        <Box
-          position="relative"
-          overflow="hidden"
-          ref={containerRef}
-          w="full"
-          h="540px"
-          cursor="pointer"
-        >
-          <Flex transform={`translateX(${x}px)`} h="full">
-            <Flex
-              onMouseDown={onMouseDown}
-              onMouseMove={onMove}
-              onMouseUp={() => endDrag({})}
+    <Flex ref={visibleAreaRef} w="full" overflow="hidden" position="relative">
+      {!!displayNavigationButtons && (
+        <>
+          {[
+            { key: 1, onClick: slideLeft, left: `${itemWidth / 50}px` },
+            {
+              key: 2,
+              onClick: slideRight,
+              right: `${itemWidth / 50}px`,
+              transform: "rotate(180deg)",
+            },
+          ].map((props) => (
+            <Box
               position="absolute"
-              transform={`translateX(${animatedX}px)`}
-              userSelect="none"
-              transition={"transform 0.25s ease-out"}
-              h="full"
+              cursor="pointer"
+              top={(itemWidth - itemWidth / 5) / 2}
+              zIndex="1"
+              bg="white"
+              rounded="full"
+              h={`${itemWidth / 5}px`}
+              w={`${itemWidth / 5}px`}
+              p={`${itemWidth / 50}px`}
+              {...props}
             >
-              {carouselItems.map(({ id, title, img }, index) => {
-                const isActive = id === currentItem;
+              <LeftRoundedIcon />
+            </Box>
+          ))}
+        </>
+      )}
+      <Flex
+        w={`${contentWidth}px`}
+        userSelect="none"
+        transition={"transform 0.4s ease"}
+        transform={`translateX(${animatedOffset}px)`}
+      >
+        {[1, 2, 3].map((content) => (
+          <Flex
+            key={content}
+            w="full"
+            transform={`translateX(${
+              unanimatedOffset - 2 * contentWidth + initialOffset
+            }px)`}
+            onMouseDown={(e) => {
+              if (e.button !== 0) return;
 
-                return (
-                  <Flex
-                    key={id}
-                    direction="column"
-                    px="10px"
-                    w={`${itemWidth}px`}
-                    minW={`${itemWidth}px`}
-                    maxW={`${itemWidth}px`}
-                    h="full"
-                  >
-                    <Flex
-                      flex="1"
-                      bg={`url("${img}")`}
-                      position="relative"
-                      bgSize="cover"
-                    >
-                      <Box
-                        position="absolute"
-                        right="46px"
-                        top="50px"
-                        p="0.4rem 1rem"
-                        bg={colors.black + "6"}
-                        color={colors.white}
-                        rounded="full"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        opacity={isActive ? 1 : 0}
-                        transition={isActive ? "none" : "opacity 0.2s ease"}
-                      >
-                        {`${(index % initialItems.length) + 1}/${
-                          initialItems.length
-                        }`}
-                      </Box>
-                    </Flex>
-                    <Flex h="40px" align="end">
-                      <Box
-                        transition={
-                          isActive ? "opacity 0.3s ease 0.3s" : "none"
-                        }
-                        color={colors.lighterBlack}
-                        opacity={isActive ? 1 : 0}
-                      >
-                        {title}
-                      </Box>
-                    </Flex>
-                  </Flex>
-                );
-              })}
-            </Flex>
-          </Flex>
-        </Box>
-        <Box
-          position="absolute"
-          right="0"
-          top="16px"
-          h="500px"
-          display="flex"
-          alignItems="center"
-          justifyContent="flex-start"
-          width="172px"
-        >
-          <Box
-            bg={colors.white}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            w="40px"
-            h="40px"
-            zIndex="1"
-            rounded="full"
-            cursor="pointer"
-            onClick={() => {
-              endDrag({ slide: "right" });
+              setInitialX(e.clientX - offset);
+
+              setIsMouseDown(true);
             }}
           >
-            <RightRoundedIcon width={20} height={20} />
-          </Box>
-        </Box>
-      </Box>
-    </VStack>
+            {items.map(({ id, url }) => {
+              return (
+                <Flex
+                  key={id}
+                  w={`${itemWidth}px`}
+                  h={`${itemWidth}px`}
+                  p="0 0.25rem"
+                >
+                  <Image
+                    id={`image-${id}`}
+                    src={url}
+                    draggable={false}
+                    alt=""
+                    objectFit="cover"
+                    flex="1"
+                    onError={() => {
+                      const video = document.createElement("video");
+                      video.autoplay = true;
+                      video.muted = true;
+                      video.loop = true;
+                      video.src = url;
+                      video.addEventListener("error", () => {});
+                      video.setAttribute(
+                        "style",
+                        "object-fit: cover; display: flex; flex: 1"
+                      );
+                      const target = document.getElementById(`image-${id}`);
+                      target?.insertAdjacentElement("beforebegin", video);
+                      target?.remove();
+                    }}
+                  />
+                </Flex>
+              );
+            })}
+          </Flex>
+        ))}
+      </Flex>
+    </Flex>
   );
 };
 

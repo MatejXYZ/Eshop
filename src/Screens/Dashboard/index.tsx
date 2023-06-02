@@ -7,10 +7,11 @@ import {
   isSearchActiveState,
 } from "../../atoms";
 
-import { SecondBar, Carousel } from "./Components";
+import { SecondBar } from "./Components";
 import colors from "../../colors";
 import doesMediaUrlWork from "../../utils/doesMediaUrlWork";
 import findMediaType from "../../utils/findMediaType";
+import { Carousel } from "../../Components";
 
 const URLS = [
   "https://v.ftcdn.net/05/73/48/28/240_F_573482848_v4lvfzewWuHMVJHoZjWff5OgY4eRYbzT_ST.mp4",
