@@ -62,7 +62,7 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <Flex p="0 40%" justifyContent="center">
+        <Flex p="0 20%" justifyContent="center">
           {urlItems.length ? (
             <Carousel items={urlItems} isCentered displayNavigationButtons />
           ) : (

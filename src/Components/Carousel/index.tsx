@@ -1,7 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Flex, Image } from "@chakra-ui/react";
-
-import { LeftRoundedIcon } from "../assets/svg";
+import { Flex, Image } from "@chakra-ui/react";
+import NavigationButton, { Orientation } from "./NavigationButton";
 
 type Item = {
   id: number | string;
@@ -254,30 +253,16 @@ const Carousel: FC<CarouselProps> = ({
     <Flex ref={visibleAreaRef} w="full" overflow="hidden" position="relative">
       {!!displayNavigationButtons && (
         <>
-          {[
-            { key: 1, onClick: slideLeft, left: `${itemWidth / 50}px` },
-            {
-              key: 2,
-              onClick: slideRight,
-              right: `${itemWidth / 50}px`,
-              transform: "rotate(180deg)",
-            },
-          ].map((props) => (
-            <Box
-              position="absolute"
-              cursor="pointer"
-              top={(itemWidth - itemWidth / 5) / 2}
-              zIndex="1"
-              bg="white"
-              rounded="full"
-              h={`${itemWidth / 5}px`}
-              w={`${itemWidth / 5}px`}
-              p={`${itemWidth / 50}px`}
-              {...props}
-            >
-              <LeftRoundedIcon />
-            </Box>
-          ))}
+          <NavigationButton
+            carouselItemWidth={itemWidth}
+            orientation={Orientation.left}
+            onClick={slideLeft}
+          />
+          <NavigationButton
+            carouselItemWidth={itemWidth}
+            orientation={Orientation.right}
+            onClick={slideRight}
+          />
         </>
       )}
       <Flex
