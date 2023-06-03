@@ -13,13 +13,15 @@ const doesMediaUrlWork: (props: {
   testEl.src = url;
 
   return new Promise((resolve) => {
-    testEl.onload = () => {
-      resolve(true);
-    };
-
-    testEl.oncanplay = () => {
-      resolve(true);
-    };
+    if (type === MediaType.image) {
+      testEl.onload = () => {
+        resolve(true);
+      };
+    } else {
+      testEl.oncanplay = () => {
+        resolve(true);
+      };
+    }
 
     testEl.onerror = () => {
       resolve(false);
