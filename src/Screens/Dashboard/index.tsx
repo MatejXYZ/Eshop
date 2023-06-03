@@ -48,7 +48,11 @@ const Dashboard = () => {
 
   const urlItems = useMemo(
     () =>
-      urls?.map((item, index) => ({ id: index, url: item, title: item })) ?? [],
+      urls?.map((item, index) => ({
+        id: index,
+        url: item,
+        title: index % 2 ? item : undefined,
+      })) ?? [],
     [urls]
   );
 
