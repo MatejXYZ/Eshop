@@ -1,3 +1,8 @@
+export enum Orientation {
+  left,
+  right,
+}
+
 export type Item = {
   id: number | string;
   url: string;

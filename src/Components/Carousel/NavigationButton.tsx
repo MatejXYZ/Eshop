@@ -1,12 +1,9 @@
 import { FC, useMemo } from "react";
 import { BoxProps, Flex } from "@chakra-ui/react";
 
-import { LeftIcon } from "../../assets/svg";
+import { Orientation } from "./utils";
 
-export enum Orientation {
-  left,
-  right,
-}
+import { LeftIcon } from "../../assets/svg";
 
 type NavigationButtonProps = BoxProps & {
   carouselItemWidth: number;

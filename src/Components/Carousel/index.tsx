@@ -1,9 +1,9 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Flex, Image } from "@chakra-ui/react";
 
-import NavigationButton, { Orientation } from "./NavigationButton";
+import NavigationButton from "./NavigationButton";
 
-import { Item, padItems } from "./utils";
+import { Item, Orientation, padItems } from "./utils";
 
 type CarouselProps = {
   items: Item[];
@@ -53,8 +53,8 @@ const Carousel: FC<CarouselProps> = ({
   const [shortDrag, setShortDrag] = useState<null | {
     count: number;
     value: number;
-    direction: "left" | "right";
-  }>({ count: 0, value: 0, direction: "right" });
+    direction: Orientation.left | Orientation.right;
+  }>({ count: 0, value: 0, direction: Orientation.right });
 
   const offset = unanimatedOffset + animatedOffset;
 
@@ -108,7 +108,7 @@ const Carousel: FC<CarouselProps> = ({
           return {
             count: prev.count + 1,
             value: prev.value + lMovementX,
-            direction: e.movementX > 0 ? "left" : "right",
+            direction: e.movementX > 0 ? Orientation.left : Orientation.right,
           };
         }
 
@@ -183,12 +183,12 @@ const Carousel: FC<CarouselProps> = ({
 
       setIsMouseDown(false);
 
-      setShortDrag({ count: 0, value: 0, direction: "right" });
+      setShortDrag({ count: 0, value: 0, direction: Orientation.right });
 
       if (shortDrag?.value) {
         // slide offset by one space
         newOffset =
-          shortDrag.direction === "right"
+          shortDrag.direction === Orientation.right
             ? offset - itemWidth
             : offset + itemWidth;
 
