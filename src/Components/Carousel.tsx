@@ -138,8 +138,8 @@ const Carousel: FC<CarouselProps> = ({
 
         if (
           prev &&
-          prev.value + lMovementX < itemWidth / 2 &&
-          prev.count < itemWidth / 50
+          prev.value + lMovementX < itemWidth &&
+          prev.count < itemWidth / 10
         ) {
           if (lMovementX < 1) return prev;
 
