@@ -10,8 +10,6 @@ type CarouselProps = {
   numberOfVisibleItems?: number;
   isCentered?: boolean;
   displayNavigationButtons?: boolean;
-  // NavigationButton?: FC;
-  // RightNavigationButton?: FC;
 };
 
 const Carousel: FC<CarouselProps> = ({
@@ -19,8 +17,6 @@ const Carousel: FC<CarouselProps> = ({
   numberOfVisibleItems = 1.25,
   isCentered = false,
   displayNavigationButtons,
-  // NavigationButton: UserNavigationButton,
-  // RightNavigationButton: UserRightNavigationButton,
 }) => {
   const items = useMemo(() => padItems(initialItems), [initialItems]);
 
@@ -100,7 +96,7 @@ const Carousel: FC<CarouselProps> = ({
 
         if (
           prev &&
-          prev.value + lMovementX < itemWidth &&
+          prev.value + lMovementX < itemWidth / 2 &&
           prev.count < itemWidth / 10
         ) {
           if (lMovementX < 1) return prev;
