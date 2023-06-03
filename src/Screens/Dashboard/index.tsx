@@ -47,7 +47,8 @@ const Dashboard = () => {
   const { urls } = useWorkingUrls(URLS);
 
   const urlItems = useMemo(
-    () => urls?.map((item, index) => ({ id: index, url: item })) ?? [],
+    () =>
+      urls?.map((item, index) => ({ id: index, url: item, title: item })) ?? [],
     [urls]
   );
 
@@ -62,7 +63,7 @@ const Dashboard = () => {
       <Box position="relative">
         <SecondBar />
         <Box w="full" h="3rem" bg={colors.gray} />
-        <Flex p="0 20%" justifyContent="center">
+        <Flex p="0 40%" justifyContent="center">
           {urlItems.length ? (
             <Carousel items={urlItems} isCentered displayNavigationButtons />
           ) : (

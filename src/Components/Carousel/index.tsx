@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Flex, Image } from "@chakra-ui/react";
+import { Box, Flex, Image } from "@chakra-ui/react";
 
 import NavigationButton from "./NavigationButton";
 
@@ -260,37 +260,43 @@ const Carousel: FC<CarouselProps> = ({
               setIsMouseDown(true);
             }}
           >
-            {items.map(({ id, url }) => {
+            {items.map(({ id, url, title }) => {
               return (
                 <Flex
                   key={id}
                   w={`${itemWidth}px`}
-                  h={`${itemWidth}px`}
                   p="0 0.25rem"
+                  flexDir="column"
                 >
-                  <Image
-                    id={`image-${id}`}
-                    src={url}
-                    draggable={false}
-                    alt=""
-                    objectFit="cover"
-                    flex="1"
-                    onError={() => {
-                      const video = document.createElement("video");
-                      video.autoplay = true;
-                      video.muted = true;
-                      video.loop = true;
-                      video.src = url;
-                      video.addEventListener("error", () => {});
-                      video.setAttribute(
-                        "style",
-                        "object-fit: cover; display: flex; flex: 1"
-                      );
-                      const target = document.getElementById(`image-${id}`);
-                      target?.insertAdjacentElement("beforebegin", video);
-                      target?.remove();
-                    }}
-                  />
+                  <Box h={`calc(${itemWidth}px - 0.25rem)`}>
+                    <Image
+                      id={`image-${id}`}
+                      src={url}
+                      draggable={false}
+                      alt=""
+                      h="100%"
+                      w="100%"
+                      objectFit="cover"
+                      onError={() => {
+                        const video = document.createElement("video");
+                        video.autoplay = true;
+                        video.muted = true;
+                        video.loop = true;
+                        video.src = url;
+                        video.addEventListener("error", () => {});
+                        video.setAttribute(
+                          "style",
+                          "object-fit: cover; display: flex; width: 100%; height: 100%;"
+                        );
+                        const target = document.getElementById(`image-${id}`);
+                        target?.insertAdjacentElement("beforebegin", video);
+                        target?.remove();
+                      }}
+                    />
+                  </Box>
+                  <Box wordBreak="break-all" noOfLines={5}>
+                    {title}
+                  </Box>
                 </Flex>
               );
             })}

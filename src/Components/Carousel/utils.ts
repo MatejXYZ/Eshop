@@ -6,6 +6,7 @@ export enum Orientation {
 export type Item = {
   id: number | string;
   url: string;
+  title?: string;
 };
 
 export const padItems = (items: Item[]): Item[] => {
