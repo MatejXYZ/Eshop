@@ -4,7 +4,7 @@ import { Box, Flex, Image } from "@chakra-ui/react";
 import { LeftRoundedIcon } from "../assets/svg";
 
 type Item = {
-  id: number;
+  id: number | string;
   url: string;
 };
 
@@ -18,13 +18,33 @@ type CarouselProps = {
 };
 
 const Carousel: FC<CarouselProps> = ({
-  items,
+  items: initialItems,
   numberOfVisibleItems = 1.25,
   isCentered = false,
   displayNavigationButtons,
   // NavigationButton: UserNavigationButton,
   // RightNavigationButton: UserRightNavigationButton,
 }) => {
+  const items = useMemo(() => {
+    if (initialItems.length === 1)
+      return Array.from(Array(4).keys()).map((item) => ({
+        ...initialItems[0],
+        id: item,
+      }));
+    else if (initialItems.length < 4)
+      return initialItems
+        .map<Item>((item) => ({ ...item, id: `padding-left-${item.id}` }))
+        .concat(initialItems)
+        .concat(
+          initialItems.map<Item>((item) => ({
+            ...item,
+            id: `padding-right-${item.id}`,
+          }))
+        );
+
+    return initialItems;
+  }, [initialItems]);
+
   const visibleAreaRef = useRef<null | HTMLDivElement>(null);
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
