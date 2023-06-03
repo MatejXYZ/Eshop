@@ -8,6 +8,26 @@ type Item = {
   url: string;
 };
 
+const padItems = (items: Item[]): Item[] => {
+  if (items.length === 1)
+    return Array.from(Array(4).keys()).map((item) => ({
+      ...items[0],
+      id: item,
+    }));
+  else if (items.length < 4)
+    return items
+      .map<Item>((item) => ({ ...item, id: `padding-left-${item.id}` }))
+      .concat(items)
+      .concat(
+        items.map<Item>((item) => ({
+          ...item,
+          id: `padding-right-${item.id}`,
+        }))
+      );
+
+  return items;
+};
+
 type CarouselProps = {
   items: Item[];
   numberOfVisibleItems?: number;
@@ -25,39 +45,11 @@ const Carousel: FC<CarouselProps> = ({
   // NavigationButton: UserNavigationButton,
   // RightNavigationButton: UserRightNavigationButton,
 }) => {
-  const items = useMemo(() => {
-    if (initialItems.length === 1)
-      return Array.from(Array(4).keys()).map((item) => ({
-        ...initialItems[0],
-        id: item,
-      }));
-    else if (initialItems.length < 4)
-      return initialItems
-        .map<Item>((item) => ({ ...item, id: `padding-left-${item.id}` }))
-        .concat(initialItems)
-        .concat(
-          initialItems.map<Item>((item) => ({
-            ...item,
-            id: `padding-right-${item.id}`,
-          }))
-        );
-
-    return initialItems;
-  }, [initialItems]);
+  const items = useMemo(() => padItems(initialItems), [initialItems]);
 
   const visibleAreaRef = useRef<null | HTMLDivElement>(null);
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const onResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", onResize);
-
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
 
   const [visibleAreaWidth, setVisibleAreaWidth] = useState(0);
 
@@ -73,13 +65,6 @@ const Carousel: FC<CarouselProps> = ({
     [itemWidth, items.length]
   );
 
-  useEffect(() => {
-    const lVisibleAreaWidth =
-      visibleAreaRef.current?.getBoundingClientRect().width;
-
-    if (lVisibleAreaWidth) setVisibleAreaWidth(lVisibleAreaWidth);
-  }, [windowWidth]);
-
   const [initialX, setInitialX] = useState(0);
 
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -88,7 +73,7 @@ const Carousel: FC<CarouselProps> = ({
 
   const [animatedOffset, setAnimatedOffset] = useState(0);
 
-  const [mouseMovement, setMouseMovement] = useState<null | {
+  const [shortDrag, setShortDrag] = useState<null | {
     count: number;
     value: number;
     direction: "left" | "right";
@@ -122,18 +107,18 @@ const Carousel: FC<CarouselProps> = ({
     });
   }, [animatedOffset, itemWidth, unanimatedOffset]);
 
-  useEffect(() => {
+  const checkRowEnding = useCallback(() => {
     if (!isMouseDown && Math.abs(offset) > (items.length - 2) * itemWidth) {
       setOffset({
-        unanimated: itemWidth * (offset < 0 ? 1 : -1) - animatedOffset,
+        unanimated: (offset < 0 ? 1 : -1) * itemWidth - animatedOffset,
         animated: animatedOffset,
       });
     }
   }, [animatedOffset, isMouseDown, itemWidth, items.length, offset]);
 
-  useEffect(() => {
-    const onMouseMove = (e: globalThis.MouseEvent) => {
-      setMouseMovement((prev) => {
+  const recordShortDrag = useCallback(
+    (e: globalThis.MouseEvent) => {
+      setShortDrag((prev) => {
         const lMovementX = Math.abs(e.movementX);
 
         if (
@@ -152,9 +137,38 @@ const Carousel: FC<CarouselProps> = ({
 
         return null;
       });
+    },
+    [itemWidth]
+  );
 
-      let newOffset = e.clientX - initialX;
+  useEffect(() => {
+    const onResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
+    window.addEventListener("resize", onResize);
+
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  useEffect(() => {
+    const lVisibleAreaWidth =
+      visibleAreaRef.current?.getBoundingClientRect().width;
+
+    if (lVisibleAreaWidth) setVisibleAreaWidth(lVisibleAreaWidth);
+  }, [windowWidth]);
+
+  useEffect(() => {
+    checkRowEnding();
+  }, [checkRowEnding]);
+
+  useEffect(() => {
+    const onMouseMove = (e: globalThis.MouseEvent) => {
+      recordShortDrag(e);
+
+      let newOffset = e.clientX - initialX; // drag length
+
+      // if near end of row, skip back to beginning
       if (Math.abs(newOffset) > (items.length - 2) * itemWidth) {
         newOffset = 2 * itemWidth * (newOffset < 0 ? 1 : -1);
 
@@ -172,7 +186,15 @@ const Carousel: FC<CarouselProps> = ({
 
       return () => window.removeEventListener("mousemove", onMouseMove);
     }
-  }, [animatedOffset, initialX, isMouseDown, itemWidth, items.length, offset]);
+  }, [
+    animatedOffset,
+    initialX,
+    isMouseDown,
+    itemWidth,
+    items.length,
+    offset,
+    recordShortDrag,
+  ]);
 
   useEffect(() => {
     const onMouseUp = (e: globalThis.MouseEvent) => {
@@ -184,18 +206,20 @@ const Carousel: FC<CarouselProps> = ({
 
       setIsMouseDown(false);
 
-      setMouseMovement({ count: 0, value: 0, direction: "right" });
+      setShortDrag({ count: 0, value: 0, direction: "right" });
 
-      if (mouseMovement?.value) {
-        if (offset > 0 && initialX > contentWidth) lInitialX -= contentWidth;
-        else if (offset < 0 && initialX < itemWidth) lInitialX += contentWidth;
-
+      if (shortDrag?.value) {
+        // slide offset by one space
         newOffset =
-          mouseMovement.direction === "right"
+          shortDrag.direction === "right"
             ? offset - itemWidth
             : offset + itemWidth;
+
+        if (offset > 0 && initialX > contentWidth) lInitialX -= contentWidth;
+        else if (offset < 0 && initialX < itemWidth) lInitialX += contentWidth;
       }
 
+      // loop through item positions to find the closest one
       for (let i = -items.length; i <= items.length; i++) {
         if (newOffset <= (i + 0.5) * itemWidth) {
           const dragLength = e.clientX - lInitialX;
@@ -222,7 +246,7 @@ const Carousel: FC<CarouselProps> = ({
     isMouseDown,
     itemWidth,
     items.length,
-    mouseMovement,
+    shortDrag,
     offset,
   ]);
 
