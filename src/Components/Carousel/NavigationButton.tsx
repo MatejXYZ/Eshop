@@ -16,12 +16,12 @@ const NavigationButton: FC<NavigationButtonProps> = ({
   ...rest
 }) => {
   const width = useMemo(() => {
-    const width = carouselItemWidth / 8;
+    const lWidth = carouselItemWidth / 7 + 1000 / carouselItemWidth;
 
-    if (width > 75) return 75;
-    else if (width < 35) return 35;
+    if (lWidth > 75) return 75;
+    else if (lWidth < 15) return 15;
 
-    return width;
+    return lWidth;
   }, [carouselItemWidth]);
 
   const margin = width / 2;
