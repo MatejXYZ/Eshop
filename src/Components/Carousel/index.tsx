@@ -22,8 +22,6 @@ const Carousel: FC<CarouselProps> = ({
 
   const visibleAreaRef = useRef<null | HTMLDivElement>(null);
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
   const [visibleAreaWidth, setVisibleAreaWidth] = useState(0);
 
   const itemWidth = useMemo(
@@ -115,21 +113,18 @@ const Carousel: FC<CarouselProps> = ({
   );
 
   useEffect(() => {
-    const onResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
+    if (visibleAreaRef.current) {
+      const observer = new ResizeObserver(([res]) => {
+        setVisibleAreaWidth(res.contentRect.width);
+      });
 
-    window.addEventListener("resize", onResize);
+      observer.observe(visibleAreaRef.current);
 
-    return () => window.removeEventListener("resize", onResize);
+      return () => {
+        observer.disconnect();
+      };
+    }
   }, []);
-
-  useEffect(() => {
-    const lVisibleAreaWidth =
-      visibleAreaRef.current?.getBoundingClientRect().width;
-
-    if (lVisibleAreaWidth) setVisibleAreaWidth(lVisibleAreaWidth);
-  }, [windowWidth]);
 
   useEffect(() => {
     checkRowEnding();
