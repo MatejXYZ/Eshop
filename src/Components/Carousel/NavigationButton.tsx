@@ -24,7 +24,7 @@ const NavigationButton: FC<NavigationButtonProps> = ({
     return lWidth;
   }, [carouselItemWidth]);
 
-  const margin = width / 2;
+  const margin = carouselItemWidth / 12 - 1000 / carouselItemWidth;
 
   const padding = width / 7;
 
