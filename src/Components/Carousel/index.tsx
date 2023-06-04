@@ -140,7 +140,7 @@ const Carousel: FC<CarouselProps> = ({
       if (Math.abs(newOffset) > (items.length - 2) * itemWidth) {
         newOffset = 2 * itemWidth * (newOffset < 0 ? 1 : -1);
 
-        setInitialX(e.clientX - offset);
+        setInitialX(e.clientX - newOffset);
       }
 
       setOffset({
@@ -168,8 +168,6 @@ const Carousel: FC<CarouselProps> = ({
     const onMouseUp = (e: globalThis.MouseEvent) => {
       if (e.button !== 0) return;
 
-      let lInitialX = initialX;
-
       let newOffset = offset;
 
       setIsMouseDown(false);
@@ -182,15 +180,12 @@ const Carousel: FC<CarouselProps> = ({
           shortDrag.direction === Orientation.right
             ? offset - itemWidth
             : offset + itemWidth;
-
-        if (offset > 0 && initialX > contentWidth) lInitialX -= contentWidth;
-        else if (offset < 0 && initialX < itemWidth) lInitialX += contentWidth;
       }
 
       // loop through item positions to find the closest one
       for (let i = -items.length; i <= items.length; i++) {
         if (newOffset <= (i + 0.5) * itemWidth) {
-          const dragLength = e.clientX - lInitialX;
+          const dragLength = e.clientX - initialX;
 
           setOffset({
             unanimated: dragLength - animatedOffset,
