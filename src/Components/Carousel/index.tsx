@@ -90,9 +90,9 @@ const Carousel: FC<CarouselProps> = ({
   }, [animatedOffset, isMouseDown, itemWidth, items.length, offset]);
 
   const recordShortDrag = useCallback(
-    (e: globalThis.MouseEvent) => {
+    ({ movementX }: { movementX: number }) => {
       setShortDrag((prev) => {
-        const lMovementX = Math.abs(e.movementX);
+        const lMovementX = Math.abs(movementX);
 
         if (
           prev &&
@@ -104,7 +104,7 @@ const Carousel: FC<CarouselProps> = ({
           return {
             count: prev.count + 1,
             value: prev.value + lMovementX,
-            direction: e.movementX > 0 ? Orientation.left : Orientation.right,
+            direction: movementX > 0 ? Orientation.left : Orientation.right,
           };
         }
 
@@ -137,7 +137,7 @@ const Carousel: FC<CarouselProps> = ({
 
   useEffect(() => {
     const onMouseMove = (e: globalThis.MouseEvent) => {
-      recordShortDrag(e);
+      recordShortDrag({ movementX: e.movementX });
 
       let newOffset = e.clientX - initialX; // drag length
 
@@ -223,6 +223,101 @@ const Carousel: FC<CarouselProps> = ({
     offset,
   ]);
 
+  // handle touch
+
+  const [isTouching, setIsTouching] = useState(true);
+
+  const [touchX, setTouchX] = useState(0);
+
+  useEffect(() => {
+    const onTouchMove = (e: globalThis.TouchEvent) => {
+      const { clientX } = e.touches[0];
+
+      recordShortDrag({ movementX: clientX - touchX });
+
+      setTouchX(clientX);
+
+      let newOffset = clientX - initialX; // drag length
+
+      // if near end of row, skip back to beginning
+      if (Math.abs(newOffset) > (items.length - 2) * itemWidth) {
+        newOffset = 2 * itemWidth * (newOffset < 0 ? 1 : -1);
+
+        setInitialX(clientX - offset);
+      }
+
+      setOffset({
+        unanimated: newOffset - animatedOffset,
+        animated: animatedOffset,
+      });
+    };
+
+    if (isTouching) {
+      window.addEventListener("touchmove", onTouchMove);
+    }
+
+    return () => window.removeEventListener("touchmove", onTouchMove);
+  }, [
+    animatedOffset,
+    initialX,
+    isTouching,
+    itemWidth,
+    items.length,
+    offset,
+    recordShortDrag,
+    touchX,
+  ]);
+
+  useEffect(() => {
+    const onTouchEnd = (e: globalThis.TouchEvent) => {
+      let lInitialX = initialX;
+
+      let newOffset = offset;
+
+      setIsTouching(false);
+
+      setShortDrag({ count: 0, value: 0, direction: Orientation.right });
+
+      if (shortDrag?.value) {
+        // slide offset by one space
+        newOffset =
+          shortDrag.direction === Orientation.right
+            ? offset - itemWidth
+            : offset + itemWidth;
+      }
+
+      // loop through item positions to find the closest one
+      for (let i = -items.length; i <= items.length; i++) {
+        if (newOffset <= (i + 0.5) * itemWidth) {
+          const dragLength = touchX - lInitialX;
+
+          setOffset({
+            unanimated: dragLength - animatedOffset,
+            animated: animatedOffset - dragLength + i * itemWidth,
+          });
+
+          break;
+        }
+      }
+    };
+
+    if (isTouching) {
+      window.addEventListener("touchend", onTouchEnd);
+    }
+
+    return () => window.removeEventListener("touchend", onTouchEnd);
+  }, [
+    animatedOffset,
+    contentWidth,
+    initialX,
+    isTouching,
+    itemWidth,
+    items.length,
+    offset,
+    shortDrag,
+    touchX,
+  ]);
+
   return (
     <Flex ref={visibleAreaRef} w="full" overflow="hidden" position="relative">
       {!!displayNavigationButtons && (
@@ -252,6 +347,11 @@ const Carousel: FC<CarouselProps> = ({
             transform={`translateX(${
               unanimatedOffset - 2 * contentWidth + initialOffset
             }px)`}
+            onTouchStart={(e) => {
+              setInitialX(e.touches[0].clientX - offset);
+
+              setIsTouching(true);
+            }}
             onMouseDown={(e) => {
               if (e.button !== 0) return;
 
