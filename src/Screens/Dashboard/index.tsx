@@ -6,9 +6,7 @@ import {
   isSearchActiveState,
 } from "../../atoms";
 
-import { BackgroundEffect, Carousel, SecondBar } from "./Components";
-
-import colors from "../../colors";
+import { BackgroundEffect, Carousel, Navigation } from "./Components";
 
 const Dashboard = () => {
   const setIsSearchActive = useSetRecoilState(isSearchActiveState);
@@ -25,11 +23,8 @@ const Dashboard = () => {
           setIsBackgroundEffectActive(false);
         }}
       />
-      <Box position="relative">
-        <SecondBar />
-        <Box w="full" h="3rem" bg={colors.gray} />
-        <Carousel />
-      </Box>
+      <Navigation />
+      <Carousel />
     </Box>
   );
 };

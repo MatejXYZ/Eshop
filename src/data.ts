@@ -7,7 +7,7 @@ type MenuData = { [key: string]: { title: string; items: MenuItems } };
 
 export const menuData: MenuData = {
   newAndFeatured: {
-    title: "New & Featured",
+    title: "Featured",
     items: [
       {
         title: "Featured",
@@ -271,46 +271,6 @@ export const menuData: MenuData = {
           "Tennis",
           "Golf",
           "Yoga",
-        ],
-      },
-    ],
-  },
-  guides: {
-    title: "Guides",
-    items: [
-      {
-        title: "Featured",
-        items: [
-          "Nike Running Shoe Finder",
-          "Nike Activity Finder",
-          "Fleece Shop",
-          "Best Leggings For Cold Weather",
-          "How To Clean Your Air Force 1's",
-          "5 Ways To Style A Nike Crop Top",
-        ],
-      },
-      {
-        title: "Buying Guides",
-        items: [
-          "All Buying Guides",
-          "Guides for Runners",
-          "Guides for Gym & Training",
-          "Guides for Yoga",
-          "Guide for Leggings",
-          "Guide for Football Boots",
-          "Bra Size Finder",
-          "Product Care - How to Look After Your Gear",
-        ],
-      },
-      {
-        title: "Expert Tips",
-        items: [
-          "All Expert Tips",
-          "Train Better With Guidance from Athletes* & Experts",
-          "Develop Healthy Eating Habits",
-          "Improve Your Recovery",
-          "Improve Your Mindset",
-          "Improve Your Sleep",
         ],
       },
     ],
