@@ -1,25 +1,30 @@
 import { FC } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { Box } from "@chakra-ui/react";
 
 import { isBackgroundEffectActiveState } from "../../../atoms";
 
 type BackgroundEffectProps = {
-  callback: () => void;
+  callback?: () => void;
 };
 
 const BackgroundEffect: FC<BackgroundEffectProps> = ({ callback }) => {
-  const isActive = useRecoilValue(isBackgroundEffectActiveState);
+  const [isActive, setIsActive] = useRecoilState(isBackgroundEffectActiveState);
 
   return (
     <Box
       backdropFilter={isActive ? "blur(0.25rem) brightness(0.75)" : "none"}
       transition={isActive ? "backdrop-filter 1s" : "backdrop-filter 0.5s"}
-      zIndex={isActive ? "1" : "-1"}
+      // zIndex={isActive ? "1" : "-1"}
+      zIndex="1"
       position="absolute"
       w="100%"
       h="100%"
-      onClick={callback}
+      onClick={() => {
+        setIsActive(false);
+
+        callback?.();
+      }}
     />
   );
 };
