@@ -1,216 +1,103 @@
-import { useState, useEffect, FC, useMemo } from "react";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { Box, Flex, Button, BoxProps } from "@chakra-ui/react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
+import { useState } from "react";
 
-import {
-  isBackgroundEffectActiveState,
-  isSearchActiveState,
-} from "../../../../atoms";
+import { navigationData } from "../../../../mockData";
 
-import colors from "../../../../colors";
+import "./slide.css";
 
-import { menuData } from "../../../../data";
+const activeMenuButtonStyle = {
+  bg: "#555",
+  px: "48px",
+  color: "#eee",
+};
 
-import { LogoIcon } from "../../../../assets/svg";
-
-import { SearchBar, SearchResults } from "./Components";
-
-import { NAVIGATION_HEIGHT } from "../../../../constants";
-
-const height = `${NAVIGATION_HEIGHT}px`;
-
-const Logo: FC<BoxProps> = () => (
-  <Flex flex="1" justify="start" h={height}>
-    <Button
-      variant="unstyled"
-      color={colors.black}
-      rounded="0"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      transition="none"
-      onClick={() => {}}
-      _hover={{ color: colors.lighterBlack }}
-      h="100%"
-    >
-      <Box w="5rem" h="5rem">
-        <LogoIcon />
-      </Box>
-    </Button>
-  </Flex>
-);
-
-const NavigationButton: FC<BoxProps> = ({ children, ...rest }) => {
-  return (
-    <Flex
-      cursor="pointer"
-      color={colors.black}
-      px="0.75rem"
-      alignItems="center"
-      justifyContent="center"
-      position="relative"
-      role="group"
-      fontWeight="bold"
-      {...rest}
-    >
-      {children}
-    </Flex>
-  );
+const expandedMenuStyle = {
+  minH: "300px",
 };
 
 const Navigation = () => {
-  const setIsBackgroundEffectActive = useSetRecoilState(
-    isBackgroundEffectActiveState
-  );
-
-  const isSearchActive = useRecoilValue(isSearchActiveState);
-
-  const [isMenuHovered, setIsMenuHovered] = useState(false);
-
-  const [disableEffects, setDisableEffects] = useState(false);
-
-  const [menuContentKey, setMenuContentKey] = useState("");
-
-  const [mouseOverBar, setMouseOverBar] = useState(false);
-
-  const [mouseOverMenu, setMouseOverMenu] = useState(false);
-
-  useEffect(() => {
-    if (!(mouseOverBar || mouseOverMenu)) {
-      setIsMenuHovered(false);
-      setIsBackgroundEffectActive(false);
-    } else {
-      setIsMenuHovered(true);
-      setIsBackgroundEffectActive(true);
-    }
-  }, [mouseOverBar, mouseOverMenu, setIsBackgroundEffectActive]);
-
-  const MenuButtonList = () => (
-    <Flex
-      onMouseEnter={() => {
-        setMouseOverBar(true);
-      }}
-      onMouseLeave={() => {
-        setMouseOverBar(false);
-      }}
-    >
-      {Object.entries(menuData).map(([key, { title }]) => {
-        return (
-          <NavigationButton
-            key={key}
-            bg={
-              key === menuContentKey && isMenuHovered
-                ? colors.lightBlack
-                : "transparent"
-            }
-            color={
-              key === menuContentKey && isMenuHovered
-                ? colors.white
-                : colors.black
-            }
-            onMouseEnter={() => {
-              setDisableEffects(true);
-
-              setTimeout(() => {
-                setDisableEffects(false);
-              }, 50);
-
-              setMenuContentKey(key);
-            }}
-          >
-            {title}
-          </NavigationButton>
-        );
-      })}
-    </Flex>
-  );
-
-  const menuContent = useMemo(
-    () => (
-      <Box
-        bg={colors.lightBlack}
-        onMouseEnter={() => {
-          setMouseOverMenu(true);
-        }}
-        onMouseLeave={() => {
-          setMouseOverMenu(false);
-        }}
-        flex="1"
-        pb="2rem"
-      >
-        <Flex
-          transform={
-            !disableEffects && isMenuHovered
-              ? "translateY(1rem)"
-              : "translateY(0)"
-          }
-          opacity={!disableEffects && isMenuHovered ? "1" : "0"}
-          transition={
-            disableEffects
-              ? "none"
-              : "transform 0.2s ease-out, opacity 0.2s ease-in"
-          }
-          justify="center"
-          p="2rem"
-        >
-          {menuData[menuContentKey]?.items.map((item) => (
-            <Box key={item.title} fontSize="1rem" w="14rem">
-              <Box cursor="pointer" pb="1.125rem" color={colors.white}>
-                {item.title}
-              </Box>
-              {item.items.map((subItem) => (
-                <Box
-                  key={subItem}
-                  color={colors.black}
-                  _hover={{ color: colors.white }}
-                  cursor="pointer"
-                  pb="0.25rem"
-                  fontWeight="bold"
-                  transition="color 0.15s ease"
-                >
-                  {subItem}
-                </Box>
-              ))}
-            </Box>
-          ))}
-        </Flex>
-      </Box>
-    ),
-    [disableEffects, isMenuHovered, menuContentKey]
+  const [activeSection, setActiveSection] = useState<number | null>(null);
+  const [lastActiveSection, setLastActiveSection] = useState<number | null>(
+    null
   );
 
   return (
-    <>
+    <Flex justify="center" w="full" h="50px" zIndex={1} position="relative">
       <Flex
-        bg={colors.white}
-        w="full"
-        maxH={isSearchActive ? "none" : isMenuHovered ? "30rem" : height}
-        minH={isMenuHovered || isSearchActive ? "20rem" : height}
-        direction="column"
+        onMouseLeave={() => {
+          setLastActiveSection(activeSection);
+
+          setActiveSection(null);
+        }}
+        bg="#555"
+        minH="full"
+        h="full"
+        flexDirection="column"
+        {...(activeSection !== null ? expandedMenuStyle : null)}
+        transition="min-height 0.5s"
+        position="absolute"
         overflow="hidden"
-        zIndex={isSearchActive ? "4" : "2"}
-        position="fixed"
-        transition="max-height, min-height, transform"
-        transitionDuration={
-          isSearchActive ? "0s, 0s, 0.2s" : "0.2s, 0.2s, 0.2s"
-        }
-        transitionDelay={isSearchActive ? "0s, 0s, 0.2s" : "0s, 0s, 0s"}
       >
-        <Flex h={height} minH={height} px="2.25rem">
-          <Logo
-            position={isSearchActive ? "absolute" : "relative"}
-            left={isSearchActive ? "2rem" : "0"}
-          />
-          {!isSearchActive && <MenuButtonList />}
-          <Flex flex="1" justify="end">
-            <SearchBar />
-          </Flex>
-        </Flex>
-        {isSearchActive && <SearchResults />}
-        {menuContent}
+        <HStack justify="space-around" spacing="8px" bg="#eee" minH="50px">
+          {navigationData.map(({ title, id }) => {
+            const isActive = id === activeSection;
+
+            return (
+              <Flex
+                key={id}
+                h="full"
+                p="0 32px"
+                fontWeight="700"
+                color="#113"
+                {...(isActive ? activeMenuButtonStyle : null)}
+                transition="padding 0.5s"
+                onMouseEnter={() => {
+                  setActiveSection(id);
+
+                  setLastActiveSection(activeSection);
+                }}
+                align="center"
+                cursor="pointer"
+              >
+                {title}
+              </Flex>
+            );
+          })}
+        </HStack>
+        <Box flex="1" flexShrink="1" w="full" p="16px">
+          <HStack
+            key={activeSection}
+            justify="space-around"
+            align="start"
+            animation={`0.25s ease 0s ${
+              Number(lastActiveSection) > Number(activeSection)
+                ? "slide-in-from-right"
+                : "slide-in-from-left"
+            }`}
+          >
+            {navigationData
+              .find((item) => item.id === activeSection)
+              ?.subCategories.map((subCategory) => (
+                <Box>
+                  <Box color="#eee" cursor="pointer">
+                    {subCategory.title}
+                  </Box>
+                  {subCategory.items.map((item) => (
+                    <Box
+                      color="#113"
+                      key={item.id}
+                      cursor="pointer"
+                      _hover={{ color: "#eee" }}
+                    >
+                      {item.title}
+                    </Box>
+                  ))}
+                </Box>
+              ))}
+          </HStack>
+        </Box>
       </Flex>
-      <Box h={height} />
-    </>
+    </Flex>
   );
 };
 

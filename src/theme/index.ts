@@ -6,6 +6,9 @@ const theme = extendTheme({
   components: {
     Button: buttonTheme,
   },
+  fonts: {
+    body: "sans",
+  },
 });
 
 export default theme;
