@@ -96,8 +96,12 @@ const Navigation = () => {
               {navigationData
                 .find((item) => item.id === activeSection)
                 ?.subCategories.map((subCategory) => (
-                  <Box>
-                    <Box color="#eee" cursor="pointer">
+                  <Box key={subCategory.id}>
+                    <Box
+                      color="#eee"
+                      cursor="pointer"
+                      textTransform="capitalize"
+                    >
                       {subCategory.title}
                     </Box>
                     {subCategory.items.map((item) => (
@@ -106,6 +110,7 @@ const Navigation = () => {
                         key={item.id}
                         cursor="pointer"
                         _hover={{ color: "#eee" }}
+                        textTransform="capitalize"
                       >
                         {item.title}
                       </Box>

@@ -1,154 +1,36 @@
-export const navigationData = [
-  {
-    id: 0,
-    title: "Men",
-    subCategories: [
-      {
-        id: 0,
-        title: "Sneakers",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Lifestyle" },
-          { id: 2, title: "Running" },
-          { id: 3, title: "Football" },
-          { id: 4, title: "Basketball" },
-        ],
-      },
-      {
-        id: 1,
-        title: "Clothing",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Lifestyle" },
-          { id: 2, title: "Running" },
-          { id: 3, title: "Football" },
-          { id: 4, title: "Basketball" },
-          { id: 5, title: "Yoga" },
-        ],
-      },
-      {
-        id: 1,
-        title: "Clothing",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Lifestyle" },
-          { id: 2, title: "Running" },
-          { id: 3, title: "Football" },
-          { id: 4, title: "Basketball" },
-          { id: 5, title: "Yoga" },
-        ],
-      },
-      {
-        id: 1,
-        title: "Clothing",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Lifestyle" },
-          { id: 2, title: "Running" },
-          { id: 3, title: "Football" },
-          { id: 4, title: "Basketball" },
-          { id: 5, title: "Yoga" },
-        ],
-      },
-    ],
-  },
-  {
-    id: 1,
-    title: "Women",
-    subCategories: [
-      {
-        id: 0,
-        title: "Sneakers",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Lifestyle" },
-          { id: 2, title: "Yoga" },
-          { id: 3, title: "Running" },
-        ],
-      },
-      {
-        id: 0,
-        title: "Clothing",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Lifestyle" },
-          { id: 2, title: "Yoga" },
-          { id: 3, title: "Running" },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Kids",
-    subCategories: [
-      {
-        id: 0,
-        title: "Sneakers",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Football" },
-          { id: 2, title: "Basketball" },
-          { id: 3, title: "Running" },
-        ],
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "Sale",
-    subCategories: [
-      {
-        id: 0,
-        title: "Sneakers",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Lifestyle" },
-          { id: 2, title: "Yoga" },
-          { id: 3, title: "Football" },
-          { id: 4, title: "Basketball" },
-          { id: 5, title: "Running" },
-        ],
-      },
-      {
-        id: 1,
-        title: "Clothing",
-        items: [
-          {
-            id: 0,
-            title: "All",
-          },
-          { id: 1, title: "Lifestyle" },
-          { id: 2, title: "Yoga" },
-          { id: 3, title: "Football" },
-          { id: 4, title: "Basketball" },
-          { id: 5, title: "Running" },
-        ],
-      },
-    ],
-  },
-];
+const text =
+  "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.".replaceAll(
+    /[^(\w| )]/g,
+    ""
+  );
+const words = text.split(" ");
+const categories = ["Men", "Women", "Kids", "Sale"];
+
+const getNextWord = () => {
+  let nextWord = words.pop();
+
+  if (!nextWord) return "Lorem";
+
+  if (nextWord.length < 4) nextWord += ` ${getNextWord()}`;
+
+  return nextWord;
+};
+
+export const navigationData = categories.map((category, index) => {
+  return {
+    id: index,
+    title: category,
+    subCategories: Array.from(
+      Array(Math.ceil(2 + Math.random() * 3)).keys()
+    ).map((subCategory) => ({
+      id: subCategory,
+      title: getNextWord(),
+      items: Array.from(Array(Math.ceil(5 + Math.random() * 5)).keys()).map(
+        (item) => ({
+          id: item,
+          title: getNextWord(),
+        })
+      ),
+    })),
+  };
+});
