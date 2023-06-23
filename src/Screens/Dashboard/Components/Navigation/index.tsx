@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
 import { useState } from "react";
 
 import { navigationData } from "../../../../mockData";
@@ -24,13 +24,14 @@ const Navigation = () => {
   );
 
   return (
-    <HStack justifyContent="space-evenly">
+    <Flex justifyContent="space-evenly" h="50px">
+      <Spacer flex="1" />
       <Box
-        w="50%"
+        transition="flex 0.25s"
+        flex="6"
         _hover={{
-          w: "60%",
+          flex: 10,
         }}
-        transition="width 0.25s"
       >
         <Flex justify="center" w="full" h="50px" zIndex={1} position="relative">
           <Flex
@@ -80,7 +81,7 @@ const Navigation = () => {
             </Flex>
             <Box
               key={activeSection}
-              flex="1"
+              flex="3"
               flexShrink="1"
               w="full"
               p="16px"
@@ -121,12 +122,21 @@ const Navigation = () => {
           </Flex>
         </Flex>
       </Box>
-      <Flex w="120px" alignSelf="stretch" align="center">
+      <Flex
+        flex={activeSection ? "1" : "3"}
+        alignSelf="stretch"
+        align="center"
+        justify="center"
+        w={activeSection ? "0" : "120px"}
+        overflow="hidden"
+        opacity={activeSection ? "0" : "1"}
+        transition="width 0.25s, opacity 0.25s, flex 0.25s, max-width 0.25s"
+      >
         <Button>
           <SearchIcon />
         </Button>
       </Flex>
-    </HStack>
+    </Flex>
   );
 };
 

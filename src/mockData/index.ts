@@ -18,7 +18,7 @@ const getNextWord = () => {
 
 export const navigationData = categories.map((category, index) => {
   return {
-    id: index,
+    id: index + 1,
     title: category,
     subCategories: Array.from(
       Array(Math.ceil(2 + Math.random() * 3)).keys()
