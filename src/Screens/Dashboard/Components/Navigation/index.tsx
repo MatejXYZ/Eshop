@@ -12,11 +12,6 @@ const activeMenuButtonStyle = {
   color: "#eee",
 };
 
-const expandedMenuStyle = {
-  minH: "300px",
-  h: "fit-content",
-};
-
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [lastActiveSection, setLastActiveSection] = useState<number | null>(
@@ -41,15 +36,13 @@ const Navigation = () => {
               setActiveSection(null);
             }}
             bg="#555"
-            minH="full"
-            h="full"
             flexDirection="column"
-            {...(activeSection !== null ? expandedMenuStyle : null)}
-            transition="min-height 0.5s"
             position="absolute"
             overflow="hidden"
             minW="250px"
             w="full"
+            maxH={activeSection === null ? "50px" : "600px"}
+            transition="max-height 0.25s"
           >
             <Flex justify="space-around" bg="#eee">
               {navigationData.map(({ title, id }) => {
@@ -64,7 +57,7 @@ const Navigation = () => {
                     fontWeight="700"
                     color="#113"
                     {...(isActive ? activeMenuButtonStyle : null)}
-                    transition="flex 0.25s, background-color 0.125s, color 0.125s"
+                    transition="flex 0.25s, background-color 0.25s, color 0.25s"
                     onMouseEnter={() => {
                       setActiveSection(id);
 
@@ -87,7 +80,7 @@ const Navigation = () => {
               p="16px"
               display="flex"
               flexWrap="wrap"
-              animation={`0.375s ease 0s ${
+              animation={`0.25s ease 0s ${
                 Number(lastActiveSection) > Number(activeSection)
                   ? "slide-in-from-right"
                   : "slide-in-from-left"
