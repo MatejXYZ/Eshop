@@ -6,12 +6,6 @@ import { SearchIcon } from "../../../../assets/svg";
 
 import "./slide.css";
 
-const activeMenuButtonStyle = {
-  bg: "#555",
-  flex: "2",
-  color: "#eee",
-};
-
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [lastActiveSection, setLastActiveSection] = useState<number | null>(
@@ -20,14 +14,8 @@ const Navigation = () => {
 
   return (
     <Flex justifyContent="space-evenly" h="50px">
-      <Spacer flex="1" />
-      <Box
-        transition="flex 0.25s"
-        flex="6"
-        _hover={{
-          flex: 10,
-        }}
-      >
+      <Spacer flex={activeSection ? "1" : "2"} transition="flex 0.25s" />
+      <Box transition="flex 0.25s" flex={activeSection ? "7" : "6"}>
         <Flex justify="center" w="full" h="50px" zIndex={1} position="relative">
           <Flex
             onMouseLeave={() => {
@@ -50,13 +38,13 @@ const Navigation = () => {
 
                 return (
                   <Flex
-                    flex="1"
+                    flex={isActive ? "2" : "1"}
+                    bg={isActive ? "#555" : "transparent"}
+                    color={isActive ? "#eee" : "#113"}
                     key={id}
                     h="50px"
                     px="8px"
                     fontWeight="700"
-                    color="#113"
-                    {...(isActive ? activeMenuButtonStyle : null)}
                     transition="flex 0.25s, background-color 0.25s, color 0.25s"
                     onMouseEnter={() => {
                       setActiveSection(id);
@@ -86,6 +74,7 @@ const Navigation = () => {
                   : "slide-in-from-left"
               }`}
               justifyContent="space-around"
+              pb="7%"
             >
               {navigationData
                 .find((item) => item.id === activeSection)
@@ -116,14 +105,13 @@ const Navigation = () => {
         </Flex>
       </Box>
       <Flex
-        flex={activeSection ? "1" : "3"}
+        flex={activeSection ? "2" : "3"}
+        opacity={activeSection ? "0" : "1"}
         alignSelf="stretch"
         align="center"
         justify="center"
-        w={activeSection ? "0" : "120px"}
         overflow="hidden"
-        opacity={activeSection ? "0" : "1"}
-        transition="width 0.25s, opacity 0.25s, flex 0.25s, max-width 0.25s"
+        transition="width 0.25s, opacity 0.125s, flex 0.25s, padding 0.25s"
       >
         <Button>
           <SearchIcon />

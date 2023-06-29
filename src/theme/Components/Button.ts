@@ -30,9 +30,10 @@ const variantRound = defineStyle((props) => {
 
   return {
     borderRadius: "full",
-    h: "2.375rem",
+    h: ["1.5rem", "2rem", "2.5rem"],
     fontWeight: "normal",
-    px: "1.25rem",
+    px: ["0.25rem", "0.5rem", "1.25rem", null, "1.5rem"],
+    py: ["0.25rem", "0.5rem", "0.325rem"],
     transition: "none",
     ...colorStyle,
   };
