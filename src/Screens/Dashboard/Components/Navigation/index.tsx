@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Input, Spacer } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 import { navigationData } from "../../../../mockData";
@@ -19,32 +19,48 @@ const SearchBar = () => {
 
   const [isButtonActive, setIsButtonActive] = useState(false);
 
+  const onClick = useCallback(() => {
+    if (!isActive) {
+      setIsActive(true);
+
+      ref.current?.focus();
+    }
+  }, [isActive, setIsActive]);
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const onMouseEnter = useCallback(() => {
+    setIsExpanded(true);
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    setIsExpanded(false);
+
+    setIsActive(false);
+
+    ref.current?.blur();
+  }, [setIsActive]);
+
   return (
     <Flex
       rounded="full"
       w="64px"
       h="40px"
-      _hover={{
-        w: isActive ? "80%" : "80px",
-        h: "42px",
-      }}
+      {...(isExpanded
+        ? {
+            w: isActive ? "80%" : "80px",
+            h: "42px",
+          }
+        : null)}
       transition="width 0.2s, height 0.25s"
       position="relative"
       borderColor={colors.lightBlack} // NOTE - to be inherited by .search-bar-border
       overflow="hidden"
       align="center"
-      onMouseLeave={() => {
-        setIsActive(false);
-
-        ref.current?.blur();
-      }}
-      onClick={() => {
-        if (!isActive) {
-          setIsActive(true);
-
-          ref.current?.focus();
-        }
-      }}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onTouchStart={onMouseEnter}
     >
       <Box
         position="absolute"
@@ -62,6 +78,7 @@ const SearchBar = () => {
           fontSize="14px"
           display="block"
           w="calc(100% - 25px)"
+          onBlur={onMouseLeave} // NOTE - happens twice if using mouse
         />
       </Flex>
       <Button
@@ -101,10 +118,7 @@ const Navigation = () => {
 
   return (
     <Flex justifyContent="space-evenly" h="50px">
-      <Spacer
-        flex={["0", null, null, activeSection ? "1" : "2"]}
-        transition="flex 0.25s"
-      />
+      <Spacer flex={["0", activeSection ? "1" : "2"]} transition="flex 0.25s" />
       <Box
         flex={[
           isSearchActive ? "0" : activeSection ? "7" : "6",
@@ -203,7 +217,7 @@ const Navigation = () => {
         </Flex>
       </Box>
       <Flex
-        flex={activeSection ? "2" : "3"}
+        flex={[activeSection ? "0" : "3", activeSection ? "1" : "3"]}
         opacity={activeSection ? "0" : "1"}
         alignSelf="stretch"
         align="center"
