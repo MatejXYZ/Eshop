@@ -22,13 +22,13 @@ const SearchBar = () => {
   return (
     <Flex
       rounded="full"
-      w={["36px", null, "64px"]}
+      w="64px"
       h="40px"
       _hover={{
-        w: isActive ? "80%" : ["40px", null, "80px"],
+        w: isActive ? "80%" : "80px",
         h: "42px",
       }}
-      transition="width 0.25s, height 0.25s"
+      transition="width 0.2s, height 0.25s"
       position="relative"
       borderColor={colors.lightBlack} // NOTE - to be inherited by .search-bar-border
       overflow="hidden"
@@ -65,10 +65,10 @@ const SearchBar = () => {
         />
       </Flex>
       <Button
-        maxW={["40px", null, "80px"]}
-        minW={["36px", null, "64px"]}
+        maxW="80px"
+        minW="64px"
         _hover={{
-          minWidth: ["40px", null, "80px"],
+          minWidth: "80px",
           bg: colors.lightBlack,
         }}
         w="full"
@@ -82,8 +82,8 @@ const SearchBar = () => {
           setIsButtonActive(false);
         }}
         py="8px"
-        px={["16px"]}
-        transition="min-width 0.25s"
+        px={["8px", null, "16px"]}
+        transition="min-width 0.25s, padding 0.25s"
       >
         <SearchIcon />
       </Button>
@@ -101,8 +101,19 @@ const Navigation = () => {
 
   return (
     <Flex justifyContent="space-evenly" h="50px">
-      <Spacer flex={activeSection ? "1" : "2"} transition="flex 0.25s" />
-      <Box transition="flex 0.25s" flex={activeSection ? "7" : "6"}>
+      <Spacer
+        flex={["0", null, null, activeSection ? "1" : "2"]}
+        transition="flex 0.25s"
+      />
+      <Box
+        flex={[
+          isSearchActive ? "0" : activeSection ? "7" : "6",
+          null,
+          activeSection ? "7" : "6",
+        ]}
+        opacity={[isSearchActive ? "0" : "1", null, "1"]}
+        transition="flex 0.25s, opacity 0.25s"
+      >
         <Flex justify="center" w="full" h="50px" zIndex={1} position="relative">
           <Flex
             onMouseLeave={() => {
@@ -192,17 +203,13 @@ const Navigation = () => {
         </Flex>
       </Box>
       <Flex
-        flex={(() => {
-          if (activeSection) return 2;
-          else if (isSearchActive) return 4;
-          return 3;
-        })()}
+        flex={activeSection ? "2" : "3"}
         opacity={activeSection ? "0" : "1"}
         alignSelf="stretch"
         align="center"
         justify="center"
         overflow="hidden"
-        transition="width 0.25s, opacity 0.125s, flex 0.25s, padding 0.25s"
+        transition="opacity 0.125s, flex 0.25s, padding 0.25s"
       >
         <SearchBar />
       </Flex>
