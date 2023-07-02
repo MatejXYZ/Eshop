@@ -1,10 +1,70 @@
-import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Button, Flex, Input, Spacer } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 
 import { navigationData } from "../../../../mockData";
+
 import { SearchIcon } from "../../../../assets/svg";
 
+import colors from "../../../../colors";
+
 import "./slide.css";
+
+const SearchBar = () => {
+  const ref = useRef<null | HTMLInputElement>(null);
+
+  const [isActive, setIsActive] = useState(false);
+
+  return (
+    <Flex
+      rounded="full"
+      justify="end"
+      w={["36px", null, "64px"]}
+      _hover={{
+        w: ["144px", null, "256px"],
+      }}
+      transition="width 0.25s"
+      position="relative"
+      borderColor={colors.lightBlack} // NOTE - to be inherited by .search-bar-border
+      overflow="hidden"
+      align="center"
+      onMouseEnter={() => {
+        ref.current?.focus();
+      }}
+      onMouseLeave={() => {
+        ref.current?.blur();
+      }}
+    >
+      <Box
+        position="absolute"
+        w="full"
+        h="full"
+        border="solid"
+        rounded="full"
+        borderColor={isActive ? colors.lightBlack : colors.black}
+      />
+      <Box pl="15px" pr="10px">
+        <Input
+          variant="unstyled"
+          placeholder="Write here..."
+          ref={ref}
+          fontSize="14px"
+          display="block"
+        />
+      </Box>
+      <Button
+        minW={["36px", null, "64px"]}
+        onMouseEnter={() => {
+          setIsActive(true);
+        }}
+        onMouseOut={() => {
+          setIsActive(false);
+        }}
+      >
+        <SearchIcon />
+      </Button>
+    </Flex>
+  );
+};
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
@@ -113,9 +173,7 @@ const Navigation = () => {
         overflow="hidden"
         transition="width 0.25s, opacity 0.125s, flex 0.25s, padding 0.25s"
       >
-        <Button>
-          <SearchIcon />
-        </Button>
+        <SearchBar />
       </Flex>
     </Flex>
   );
