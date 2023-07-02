@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Input, Spacer } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 import { navigationData } from "../../../../mockData";
 
@@ -7,31 +8,42 @@ import { SearchIcon } from "../../../../assets/svg";
 
 import colors from "../../../../colors";
 
+import { isSearchActiveState } from "../../../../atoms";
+
 import "./slide.css";
 
 const SearchBar = () => {
   const ref = useRef<null | HTMLInputElement>(null);
 
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useRecoilState(isSearchActiveState);
+
+  const [isButtonActive, setIsButtonActive] = useState(false);
 
   return (
     <Flex
       rounded="full"
-      justify="end"
       w={["36px", null, "64px"]}
+      h="40px"
       _hover={{
-        w: ["144px", null, "256px"],
+        w: isActive ? "80%" : ["40px", null, "80px"],
+        h: "42px",
       }}
-      transition="width 0.25s"
+      transition="width 0.25s, height 0.25s"
       position="relative"
       borderColor={colors.lightBlack} // NOTE - to be inherited by .search-bar-border
       overflow="hidden"
       align="center"
-      onMouseEnter={() => {
-        ref.current?.focus();
-      }}
       onMouseLeave={() => {
+        setIsActive(false);
+
         ref.current?.blur();
+      }}
+      onClick={() => {
+        if (!isActive) {
+          setIsActive(true);
+
+          ref.current?.focus();
+        }
       }}
     >
       <Box
@@ -40,25 +52,38 @@ const SearchBar = () => {
         h="full"
         border="solid"
         rounded="full"
-        borderColor={isActive ? colors.lightBlack : colors.black}
+        borderColor={isButtonActive ? colors.lightBlack : colors.black}
       />
-      <Box pl="15px" pr="10px">
+      <Flex flex="1" justify="center">
         <Input
           variant="unstyled"
           placeholder="Write here..."
           ref={ref}
           fontSize="14px"
           display="block"
+          w="calc(100% - 25px)"
         />
-      </Box>
+      </Flex>
       <Button
+        maxW={["40px", null, "80px"]}
         minW={["36px", null, "64px"]}
+        _hover={{
+          minWidth: ["40px", null, "80px"],
+          bg: colors.lightBlack,
+        }}
+        w="full"
+        h="full"
+        flex="1"
+        flexShrink="0"
         onMouseEnter={() => {
-          setIsActive(true);
+          setIsButtonActive(true);
         }}
-        onMouseOut={() => {
-          setIsActive(false);
+        onMouseLeave={() => {
+          setIsButtonActive(false);
         }}
+        py="8px"
+        px={["16px"]}
+        transition="min-width 0.25s"
       >
         <SearchIcon />
       </Button>
@@ -71,6 +96,8 @@ const Navigation = () => {
   const [lastActiveSection, setLastActiveSection] = useState<number | null>(
     null
   );
+
+  const isSearchActive = useRecoilValue(isSearchActiveState);
 
   return (
     <Flex justifyContent="space-evenly" h="50px">
@@ -165,7 +192,11 @@ const Navigation = () => {
         </Flex>
       </Box>
       <Flex
-        flex={activeSection ? "2" : "3"}
+        flex={(() => {
+          if (activeSection) return 2;
+          else if (isSearchActive) return 4;
+          return 3;
+        })()}
         opacity={activeSection ? "0" : "1"}
         alignSelf="stretch"
         align="center"
