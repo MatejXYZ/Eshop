@@ -1,112 +1,14 @@
-import { Box, Button, Flex, Input, Spacer } from "@chakra-ui/react";
-import { useCallback, useRef, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { Box, Flex, Spacer } from "@chakra-ui/react";
+import { useCallback, useState } from "react";
+import { useRecoilValue } from "recoil";
 
 import { navigationData } from "../../../../mockData";
 
-import { SearchIcon } from "../../../../assets/svg";
-
-import colors from "../../../../colors";
-
 import { isSearchActiveState } from "../../../../atoms";
 
+import SearchBar from "./SearchBar";
+
 import "./slide.css";
-
-const SearchBar = () => {
-  const ref = useRef<null | HTMLInputElement>(null);
-
-  const [isActive, setIsActive] = useRecoilState(isSearchActiveState);
-
-  const [isButtonActive, setIsButtonActive] = useState(false);
-
-  const onClick = useCallback(() => {
-    if (!isActive) {
-      setIsActive(true);
-
-      ref.current?.focus();
-    }
-  }, [isActive, setIsActive]);
-
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const onMouseEnter = useCallback(() => {
-    setIsExpanded(true);
-  }, []);
-
-  const onMouseLeave = useCallback(() => {
-    setIsExpanded(false);
-
-    setIsActive(false);
-
-    ref.current?.blur();
-  }, [setIsActive]);
-
-  return (
-    <Flex
-      rounded="full"
-      w="64px"
-      h="40px"
-      {...(isExpanded
-        ? {
-            w: isActive ? "80%" : "80px",
-            h: "42px",
-          }
-        : null)}
-      transition="width 0.2s, height 0.25s"
-      position="relative"
-      borderColor={colors.lightBlack} // NOTE - to be inherited by .search-bar-border
-      overflow="hidden"
-      align="center"
-      onMouseLeave={onMouseLeave}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onTouchStart={onMouseEnter}
-    >
-      <Box
-        position="absolute"
-        w="full"
-        h="full"
-        border="solid"
-        rounded="full"
-        borderColor={isButtonActive ? colors.lightBlack : colors.black}
-      />
-      <Flex flex="1" justify="center">
-        <Input
-          variant="unstyled"
-          placeholder="Write here..."
-          ref={ref}
-          fontSize="14px"
-          display="block"
-          w="calc(100% - 25px)"
-          onBlur={onMouseLeave} // NOTE - happens twice if using mouse
-        />
-      </Flex>
-      <Button
-        maxW="80px"
-        minW="64px"
-        _hover={{
-          minWidth: "80px",
-          bg: colors.lightBlack,
-        }}
-        w="full"
-        h="full"
-        flex="1"
-        flexShrink="0"
-        onMouseEnter={() => {
-          setIsButtonActive(true);
-        }}
-        onMouseLeave={() => {
-          setIsButtonActive(false);
-        }}
-        py="8px"
-        px={["8px", null, "16px"]}
-        transition="min-width 0.25s, padding 0.25s"
-      >
-        <SearchIcon />
-      </Button>
-    </Flex>
-  );
-};
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
@@ -115,6 +17,21 @@ const Navigation = () => {
   );
 
   const isSearchActive = useRecoilValue(isSearchActiveState);
+
+  const onMouseEnter = useCallback(
+    (id: number) => {
+      setActiveSection(id);
+
+      setLastActiveSection(activeSection);
+    },
+    [activeSection]
+  );
+
+  const onMouseLeave = useCallback(() => {
+    setLastActiveSection(activeSection);
+
+    setActiveSection(null);
+  }, [activeSection]);
 
   return (
     <Flex justifyContent="space-evenly" h="50px">
@@ -130,11 +47,7 @@ const Navigation = () => {
       >
         <Flex justify="center" w="full" h="50px" zIndex={1} position="relative">
           <Flex
-            onMouseLeave={() => {
-              setLastActiveSection(activeSection);
-
-              setActiveSection(null);
-            }}
+            onMouseLeave={onMouseLeave}
             bg="#555"
             flexDirection="column"
             position="absolute"
@@ -158,10 +71,10 @@ const Navigation = () => {
                     px="8px"
                     fontWeight="700"
                     transition="flex 0.25s, background-color 0.25s, color 0.25s"
-                    onMouseEnter={() => {
-                      setActiveSection(id);
-
-                      setLastActiveSection(activeSection);
+                    onMouseEnter={() => onMouseEnter(id)}
+                    onTouchStart={() => {
+                      if (activeSection === id) onMouseLeave();
+                      else onMouseEnter(id);
                     }}
                     align="center"
                     justify="center"
@@ -206,6 +119,8 @@ const Navigation = () => {
                         cursor="pointer"
                         _hover={{ color: "#eee" }}
                         textTransform="capitalize"
+                        onClick={onMouseLeave}
+                        onTouchStart={onMouseLeave}
                       >
                         {item.title}
                       </Box>
