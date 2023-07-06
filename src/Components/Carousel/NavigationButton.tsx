@@ -35,7 +35,6 @@ const NavigationButton: FC<NavigationButtonProps> = ({
       position="absolute"
       cursor="pointer"
       top={carouselItemWidth / 2 - width / 2}
-      zIndex="1"
       bg="white"
       rounded="full"
       h={`${width}px`}

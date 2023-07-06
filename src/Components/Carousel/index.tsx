@@ -310,20 +310,6 @@ const Carousel: FC<CarouselProps> = ({
 
   return (
     <Flex ref={visibleAreaRef} w="full" overflow="hidden" position="relative">
-      {!!displayNavigationButtons && (
-        <>
-          <NavigationButton
-            carouselItemWidth={itemWidth}
-            orientation={Orientation.left}
-            onClick={slideLeft}
-          />
-          <NavigationButton
-            carouselItemWidth={itemWidth}
-            orientation={Orientation.right}
-            onClick={slideRight}
-          />
-        </>
-      )}
       <Flex
         w={`${contentWidth}px`}
         userSelect="none"
@@ -393,6 +379,20 @@ const Carousel: FC<CarouselProps> = ({
           </Flex>
         ))}
       </Flex>
+      {!!displayNavigationButtons && (
+        <>
+          <NavigationButton
+            carouselItemWidth={itemWidth}
+            orientation={Orientation.left}
+            onClick={slideLeft}
+          />
+          <NavigationButton
+            carouselItemWidth={itemWidth}
+            orientation={Orientation.right}
+            onClick={slideRight}
+          />
+        </>
+      )}
     </Flex>
   );
 };

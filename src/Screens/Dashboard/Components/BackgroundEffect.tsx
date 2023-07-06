@@ -15,8 +15,7 @@ const BackgroundEffect: FC<BackgroundEffectProps> = ({ callback }) => {
     <Box
       backdropFilter={isActive ? "blur(0.25rem) brightness(0.75)" : "none"}
       transition={isActive ? "backdrop-filter 1s" : "backdrop-filter 0.5s"}
-      // zIndex={isActive ? "1" : "-1"}
-      zIndex="1"
+      zIndex={isActive ? "1" : "-1"}
       position="absolute"
       w="100%"
       h="100%"
@@ -25,6 +24,8 @@ const BackgroundEffect: FC<BackgroundEffectProps> = ({ callback }) => {
 
         callback?.();
       }}
+      top="0"
+      left="0"
     />
   );
 };

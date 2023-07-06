@@ -1,10 +1,13 @@
-import { Box, Flex, Spacer } from "@chakra-ui/react";
-import { useCallback, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { Box, Flex, Spacer, VStack } from "@chakra-ui/react";
+import { useCallback, useEffect, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { navigationData } from "../../../../mockData";
 
-import { isSearchActiveState } from "../../../../atoms";
+import {
+  isBackgroundEffectActiveState,
+  isSearchActiveState,
+} from "../../../../atoms";
 
 import SearchBar from "./SearchBar";
 
@@ -27,11 +30,19 @@ const Navigation = () => {
     [activeSection]
   );
 
+  const setIsBackgroundEffectActive = useSetRecoilState(
+    isBackgroundEffectActiveState
+  );
+
   const onMouseLeave = useCallback(() => {
     setLastActiveSection(activeSection);
 
     setActiveSection(null);
   }, [activeSection]);
+
+  useEffect(() => {
+    setIsBackgroundEffectActive(!!activeSection);
+  });
 
   return (
     <Flex justifyContent="space-evenly" h="50px">
@@ -44,6 +55,7 @@ const Navigation = () => {
         ]}
         opacity={[isSearchActive ? "0" : "1", null, "1"]}
         transition="flex 0.25s, opacity 0.25s"
+        zIndex={2}
       >
         <Flex justify="center" w="full" h="50px" zIndex={1} position="relative">
           <Flex
@@ -52,7 +64,7 @@ const Navigation = () => {
             flexDirection="column"
             position="absolute"
             overflow="hidden"
-            minW="250px"
+            minW={["200px", "250px"]}
             w="full"
             maxH={activeSection === null ? "50px" : "600px"}
             transition="max-height 0.25s"
@@ -69,11 +81,12 @@ const Navigation = () => {
                     key={id}
                     h="50px"
                     px="8px"
+                    fontSize={["14px", "18px"]}
                     fontWeight="700"
                     transition="flex 0.25s, background-color 0.25s, color 0.25s"
                     onMouseEnter={() => onMouseEnter(id)}
                     onTouchStart={() => {
-                      if (activeSection === id) onMouseLeave();
+                      if (isActive) onMouseLeave();
                       else onMouseEnter(id);
                     }}
                     align="center"
@@ -85,48 +98,65 @@ const Navigation = () => {
                 );
               })}
             </Flex>
+
             <Box
-              key={activeSection}
-              flex="3"
-              flexShrink="1"
-              w="full"
-              p="16px"
-              display="flex"
-              flexWrap="wrap"
-              animation={`0.25s ease 0s ${
-                Number(lastActiveSection) > Number(activeSection)
-                  ? "slide-in-from-right"
-                  : "slide-in-from-left"
-              }`}
-              justifyContent="space-around"
-              pb="7%"
+              minH={activeSection ? "400px" : "0"}
+              transition="min-height 0.25s"
             >
-              {navigationData
-                .find((item) => item.id === activeSection)
-                ?.subCategories.map((subCategory) => (
-                  <Box key={subCategory.id}>
-                    <Box
-                      color="#eee"
-                      cursor="pointer"
-                      textTransform="capitalize"
-                    >
-                      {subCategory.title}
-                    </Box>
-                    {subCategory.items.map((item) => (
-                      <Box
-                        color="#113"
-                        key={item.id}
-                        cursor="pointer"
-                        _hover={{ color: "#eee" }}
-                        textTransform="capitalize"
-                        onClick={onMouseLeave}
-                        onTouchStart={onMouseLeave}
+              <Box
+                key={activeSection}
+                flex="3"
+                flexShrink="1"
+                w="full"
+                p="16px"
+                display="flex"
+                flexWrap="wrap"
+                animation={`0.25s ease 0s ${
+                  Number(lastActiveSection) > Number(activeSection)
+                    ? "slide-in-from-right"
+                    : "slide-in-from-left"
+                }`}
+                justifyContent="space-around"
+                pb="7%"
+                gridGap="10px"
+              >
+                {navigationData
+                  .find((item) => item.id === activeSection)
+                  ?.subCategories.map((subCategory) => (
+                    <Flex flex="1" justify="center">
+                      <VStack
+                        key={subCategory.id}
+                        align="start"
+                        spacing={["4px", null, "2px"]}
+                        w="fit-content"
                       >
-                        {item.title}
-                      </Box>
-                    ))}
-                  </Box>
-                ))}
+                        <Box
+                          color="#eee"
+                          cursor="pointer"
+                          textTransform="capitalize"
+                          fontSize={["14px", "16px"]}
+                          whiteSpace="nowrap"
+                        >
+                          {subCategory.title}
+                        </Box>
+                        {subCategory.items.map((item) => (
+                          <Box
+                            color="#113"
+                            key={item.id}
+                            cursor="pointer"
+                            _hover={{ color: "#eee" }}
+                            textTransform="capitalize"
+                            onClick={onMouseLeave}
+                            onTouchStart={onMouseLeave}
+                            fontSize={["12px", "14px", "16px"]}
+                          >
+                            {item.title}
+                          </Box>
+                        ))}
+                      </VStack>
+                    </Flex>
+                  ))}
+              </Box>
             </Box>
           </Flex>
         </Flex>
