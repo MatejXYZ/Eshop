@@ -116,14 +116,14 @@ const Navigation = () => {
                     ? "slide-in-from-right"
                     : "slide-in-from-left"
                 }`}
-                justifyContent="space-around"
+                justifyContent="center"
                 pb="7%"
                 gridGap="10px"
               >
                 {navigationData
                   .find((item) => item.id === activeSection)
                   ?.subCategories.map((subCategory) => (
-                    <Flex flex="1" justify="center">
+                    <Flex flex="1" justify="center" maxW="400px">
                       <VStack
                         key={subCategory.id}
                         align="start"
