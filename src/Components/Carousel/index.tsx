@@ -4,6 +4,7 @@ import { Box, Flex, Image } from "@chakra-ui/react";
 import NavigationButton from "./NavigationButton";
 
 import { Item, Orientation, padItems } from "./utils";
+import colors from "../../colors";
 
 type CarouselProps = {
   items: Item[];
@@ -336,7 +337,7 @@ const Carousel: FC<CarouselProps> = ({
               setIsMouseDown(true);
             }}
           >
-            {items.map(({ id, url, title }) => {
+            {items.map(({ id, url, title, description }) => {
               return (
                 <Flex
                   key={id}
@@ -370,8 +371,22 @@ const Carousel: FC<CarouselProps> = ({
                       }}
                     />
                   </Box>
-                  <Box wordBreak="break-all" noOfLines={5}>
+                  <Box
+                    wordBreak="break-all"
+                    noOfLines={2}
+                    textTransform="capitalize"
+                    fontSize="28px"
+                    fontWeight="600"
+                  >
                     {title}
+                  </Box>
+                  <Box
+                    noOfLines={5}
+                    fontSize="20px"
+                    color={colors.contrastText}
+                    lineHeight="1.125"
+                  >
+                    {description}
                   </Box>
                 </Flex>
               );

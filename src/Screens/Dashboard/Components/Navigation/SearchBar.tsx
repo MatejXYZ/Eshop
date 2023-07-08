@@ -50,7 +50,7 @@ const SearchBar = () => {
         : null)}
       transition="width 0.2s, height 0.25s"
       position="relative"
-      borderColor={colors.lightBlack} // NOTE - to be inherited by .search-bar-border
+      borderColor={colors.gray} // NOTE - to be inherited by .search-bar-border
       overflow="hidden"
       align="center"
       onMouseLeave={onMouseLeave}
@@ -63,7 +63,7 @@ const SearchBar = () => {
         h="full"
         border="solid"
         rounded="full"
-        borderColor={isButtonActive ? colors.lightBlack : colors.black}
+        borderColor={isButtonActive ? colors.gray : colors.black}
       />
       <Flex flex="1" justify="center">
         <Input
@@ -81,7 +81,7 @@ const SearchBar = () => {
         minW="64px"
         _hover={{
           minWidth: "80px",
-          bg: colors.lightBlack,
+          bg: colors.gray,
         }}
         w="full"
         h="full"

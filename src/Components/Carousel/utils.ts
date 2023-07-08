@@ -7,6 +7,7 @@ export type Item = {
   id: number | string;
   url: string;
   title?: string;
+  description?: string;
 };
 
 export const padItems = (items: Item[]): Item[] => {

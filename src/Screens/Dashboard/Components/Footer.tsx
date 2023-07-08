@@ -73,7 +73,7 @@ const Footer = () => {
     <VStack
       w="full"
       bg={colors.black}
-      color={colors.lightestBlack}
+      color={colors.lightGray}
       fontSize="0.75rem"
       p="3rem 16.5rem 0.75rem 16.5rem"
       spacing="3rem"

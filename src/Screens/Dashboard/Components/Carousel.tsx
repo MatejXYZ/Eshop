@@ -7,6 +7,8 @@ import { useWorkingUrls } from "../../../hooks";
 
 import { URLS } from "../../../constants/carousel";
 
+import { getNextWord } from "../../../mockData";
+
 const Carousel = () => {
   const { urls } = useWorkingUrls(URLS);
 
@@ -15,7 +17,12 @@ const Carousel = () => {
       urls?.map((item, index) => ({
         id: index,
         url: item,
-        title: index % 2 ? item : undefined,
+        title: `${getNextWord()} ${getNextWord()}`,
+        description: Array.from(Array(10))
+          .map(() => getNextWord())
+          .join(" ")
+          .toLowerCase()
+          .replace(/^\w/, (letter) => letter.toUpperCase()),
       })) ?? [],
     [urls]
   );
