@@ -1,4 +1,4 @@
-import { Box, Flex, Spacer, VStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, VStack } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -12,6 +12,7 @@ import {
 import SearchBar from "./SearchBar";
 
 import "./slide.css";
+import { LogoIcon } from "../../../../assets/svg";
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
@@ -46,12 +47,39 @@ const Navigation = () => {
 
   return (
     <Flex justifyContent="space-evenly" h="50px">
-      <Spacer flex={["0", activeSection ? "1" : "2"]} transition="flex 0.25s" />
+      <Flex
+        align="center"
+        display={["none", null, "flex"]}
+        flex={activeSection ? ["0", "1"] : ["0", "3"]}
+        opacity={activeSection ? "0" : "1"}
+        transition="flex 0.25s, opacity 0.25s"
+      >
+        <Box
+          flexBasis={["10px", null, "25px", "50px"]}
+          transition="flex-basis 0.25s"
+        />
+        <HStack spacing={["6px", null, null, "12px"]}>
+          <Box minW={["40px", null, null, "60px"]}>
+            <LogoIcon style={{ transform: "rotate(8deg)" }} />
+          </Box>
+          <Box
+            fontWeight="900"
+            fontSize={["18px", null, null, "24px"]}
+            userSelect="none"
+          >
+            SNEAKERS
+          </Box>
+        </HStack>
+        <Box
+          flexBasis={["15px", null, null, "25px"]}
+          transition="flex-basis 0.25s"
+        />
+      </Flex>
       <Box
         flex={[
           isSearchActive ? "0" : activeSection ? "7" : "6",
           null,
-          activeSection ? "7" : "6",
+          isSearchActive ? "4" : activeSection ? "7" : "6",
         ]}
         opacity={[isSearchActive ? "0" : "1", null, "1"]}
         transition="flex 0.25s, opacity 0.25s"
@@ -98,7 +126,6 @@ const Navigation = () => {
                 );
               })}
             </Flex>
-
             <Box
               minH={activeSection ? "400px" : "0"}
               transition="min-height 0.25s"
@@ -162,7 +189,11 @@ const Navigation = () => {
         </Flex>
       </Box>
       <Flex
-        flex={[activeSection ? "0" : "3", activeSection ? "1" : "3"]}
+        flex={
+          isSearchActive
+            ? ["5"]
+            : [activeSection ? "0" : "3", activeSection ? "1" : "3"]
+        }
         opacity={activeSection ? "0" : "1"}
         alignSelf="stretch"
         align="center"
