@@ -371,22 +371,28 @@ const Carousel: FC<CarouselProps> = ({
                       }}
                     />
                   </Box>
-                  <Box
-                    wordBreak="break-all"
-                    noOfLines={2}
-                    textTransform="capitalize"
-                    fontSize="28px"
-                    fontWeight="600"
-                  >
-                    {title}
-                  </Box>
-                  <Box
-                    noOfLines={5}
-                    fontSize="20px"
-                    color={colors.darkOrange}
-                    lineHeight="1.125"
-                  >
-                    {description}
+                  <Box pl="2.5%">
+                    <Box
+                      lineHeight="1.25"
+                      wordBreak="break-all"
+                      noOfLines={2}
+                      textTransform="capitalize"
+                      fontSize={["20px", "28px"]}
+                      fontWeight="600"
+                      color={colors.darkOrange}
+                      pt={["5px", "10px"]}
+                      pb={["2.5px", "5px"]}
+                    >
+                      {title}
+                    </Box>
+                    <Box
+                      color={colors.black}
+                      noOfLines={5}
+                      fontSize={["14px", "20px"]}
+                      lineHeight="1.125"
+                    >
+                      {description}
+                    </Box>
                   </Box>
                 </Flex>
               );

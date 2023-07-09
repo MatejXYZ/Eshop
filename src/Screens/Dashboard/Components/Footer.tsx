@@ -8,19 +8,19 @@ const Footer = () => (
   <Flex
     justify="center"
     bg={colors.darkWhite}
-    p="48px"
-    pb="12px"
+    p={{ base: "24px", xl: "48px" }}
+    pb={{ base: "6px", xl: "12px" }}
     color={colors.darkBlue}
     fontSize="12px"
   >
-    <VStack spacing="24px" maxW="1000px" align="start">
+    <VStack spacing="12px" maxW="1000px" align="start">
       <Stack direction={{ base: "column", xl: "row" }}>
         <Flex
           flexWrap={{ base: "wrap", xl: "nowrap" }}
           flexDirection={{ base: "row", xl: "column" }}
           w={{ base: "auto", xl: "240px" }}
-          gap="20px"
-          pb="40px"
+          gap={{ base: "10px", xl: "20px" }}
+          pb={{ base: "20px", xl: "30px" }}
         >
           {footerData.leftMenu.map((item) => (
             <Box
@@ -36,14 +36,14 @@ const Footer = () => (
             </Box>
           ))}
         </Flex>
-        <Wrap spacing="10px">
+        <Wrap spacing={{ base: "5px", xl: "10px" }}>
           {footerData.middleMenu.map(({ title, items }) => (
             <VStack
               key={title}
               align="flex-start"
-              spacing="20px"
-              width={["160px", "240px"]}
-              pb="20px"
+              spacing={{ base: "10px", xl: "20px" }}
+              w={{ base: "160px", sm: "200px", xl: "240px" }}
+              pb={{ base: "10px", xl: "20px" }}
             >
               <Box
                 textTransform="uppercase"
@@ -55,11 +55,11 @@ const Footer = () => (
               >
                 {title}
               </Box>
-              <VStack align="flex-start" spacing="20px">
+              <VStack align="flex-start" spacing={{ base: "4px", xl: "8px" }}>
                 {items.map((item) => (
                   <Box
                     key={item}
-                    lineHeight="1"
+                    lineHeight="1.25"
                     cursor="pointer"
                     _hover={{
                       color: colors.white,

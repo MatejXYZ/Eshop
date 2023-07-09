@@ -21,7 +21,7 @@ const variantRound = defineStyle((props) => {
           bg: colors.black,
           color: colors.white,
           _hover: {
-            bg: colors.lightGray,
+            bg: colors.gray,
             _disabled: {
               bg: colors.black,
             },

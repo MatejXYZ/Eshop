@@ -45,7 +45,7 @@ const NavigationButton: FC<NavigationButtonProps> = ({
         : { right: margin, transform: "rotate(180deg)" })}
       {...rest}
     >
-      <LeftIcon />
+      <LeftIcon style={{ transform: "translateX(-5%)" }} />
     </Flex>
   );
 };

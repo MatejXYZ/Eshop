@@ -44,7 +44,7 @@ const SearchBar = () => {
       h="40px"
       {...(isExpanded
         ? {
-            w: isActive ? "80%" : "80px",
+            w: isActive ? { base: "90%", xl: "80%" } : "80px",
             h: "42px",
           }
         : null)}

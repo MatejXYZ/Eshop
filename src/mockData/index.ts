@@ -5,7 +5,9 @@ const text =
     /[^(\w| )]/g,
     ""
   );
+
 const words = text.split(" ");
+
 const categories = ["Men", "Women", "Kids", "Sale"];
 
 export const getRandomStr = (numberOfWords = 1) => {

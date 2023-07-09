@@ -13,7 +13,7 @@ const Dashboard = () => (
     <Box flex="1">
       <Navigation />
       <Flex justifyContent="center" pt="20px" pb="40px">
-        <Box w="60%">
+        <Box w="80%" maxW="960px">
           <Carousel />
         </Box>
       </Flex>

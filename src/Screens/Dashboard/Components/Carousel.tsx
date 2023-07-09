@@ -16,7 +16,7 @@ const Carousel = () => {
         id: index,
         url: item,
         title: getRandomStr(2),
-        description: getRandomStr(10),
+        description: getRandomStr(7),
       })) ?? [],
     [urls]
   );
@@ -28,7 +28,7 @@ const Carousel = () => {
           items={urlItems}
           isCentered
           displayNavigationButtons
-          numberOfVisibleItems={1.6}
+          numberOfVisibleItems={1.25}
         />
       ) : (
         <Spinner />

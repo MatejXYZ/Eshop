@@ -11,9 +11,11 @@ import {
 
 import SearchBar from "./SearchBar";
 
-import "./slide.css";
 import { LogoIcon } from "../../../../assets/svg";
+
 import colors from "../../../../colors";
+
+import "./slide.css";
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
@@ -50,7 +52,7 @@ const Navigation = () => {
     <Flex justifyContent="space-evenly" h="50px">
       <Flex
         align="center"
-        display={["none", null, "flex"]}
+        display={["none", "flex"]}
         flex={activeSection ? ["0", "1"] : ["0", "3"]}
         opacity={activeSection ? "0" : "1"}
         transition="flex 0.25s, opacity 0.25s"
@@ -59,16 +61,16 @@ const Navigation = () => {
           flexBasis={["10px", null, "25px", "50px"]}
           transition="flex-basis 0.25s"
         />
-        <HStack spacing={["6px", null, null, "12px"]}>
-          <Box minW={["40px", null, null, "60px"]}>
+        <HStack spacing={["3px", null, null, "6px"]}>
+          <Box minW={["0", "35px", "45px", "60px"]}>
             <LogoIcon
-              style={{ transform: "rotate(8deg)" }}
-              color={colors.black}
+              style={{ transform: "rotate(12deg)" }}
+              color={colors.darkBlue}
             />
           </Box>
           <Box
             fontWeight="900"
-            fontSize={["18px", null, null, "24px"]}
+            fontSize={["0", "12px", "20px", "24px"]}
             userSelect="none"
             color={colors.black}
           >
@@ -81,11 +83,9 @@ const Navigation = () => {
         />
       </Flex>
       <Box
-        flex={[
-          isSearchActive ? "0" : activeSection ? "7" : "6",
-          null,
-          isSearchActive ? "4" : activeSection ? "7" : "6",
-        ]}
+        flex={
+          isSearchActive ? ["0", null, "4", "6"] : activeSection ? "7" : "6"
+        }
         opacity={[isSearchActive ? "0" : "1", null, "1"]}
         transition="flex 0.25s, opacity 0.25s"
         zIndex={2}
@@ -93,24 +93,24 @@ const Navigation = () => {
         <Flex justify="center" w="full" h="50px" zIndex={1} position="relative">
           <Flex
             onMouseLeave={onMouseLeave}
-            bg="#555"
+            bg={activeSection === null ? colors.offWhite : colors.gray}
             flexDirection="column"
             position="absolute"
             overflow="hidden"
             minW={["200px", "250px"]}
             w="full"
             maxH={activeSection === null ? "50px" : "600px"}
-            transition="max-height 0.25s"
+            transition="background-color 0.25s, max-height 0.25s"
           >
-            <Flex justify="space-around" bg="#eee">
+            <Flex justify="space-around" bg={colors.offWhite}>
               {navigationData.map(({ title, id }) => {
                 const isActive = id === activeSection;
 
                 return (
                   <Flex
                     flex={isActive ? "2" : "1"}
-                    bg={isActive ? "#555" : "transparent"}
-                    color={isActive ? "#eee" : colors.darkBlue}
+                    bg={isActive ? colors.gray : "transparent"}
+                    color={isActive ? colors.offWhite : colors.darkBlue}
                     key={id}
                     h="50px"
                     px="8px"
@@ -163,7 +163,7 @@ const Navigation = () => {
                         w="fit-content"
                       >
                         <Box
-                          color="#eee"
+                          color={colors.offWhite}
                           cursor="pointer"
                           textTransform="capitalize"
                           fontSize={["14px", "16px"]}
@@ -176,7 +176,7 @@ const Navigation = () => {
                             color={colors.darkBlue}
                             key={item.id}
                             cursor="pointer"
-                            _hover={{ color: "#eee" }}
+                            _hover={{ color: colors.offWhite }}
                             textTransform="capitalize"
                             onClick={onMouseLeave}
                             onTouchStart={onMouseLeave}
@@ -196,7 +196,7 @@ const Navigation = () => {
       <Flex
         flex={
           isSearchActive
-            ? ["5"]
+            ? { base: "5", xl: "3" }
             : [activeSection ? "0" : "3", activeSection ? "1" : "3"]
         }
         opacity={activeSection ? "0" : "1"}
