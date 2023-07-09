@@ -1,17 +1,26 @@
 import { Box, Flex } from "@chakra-ui/react";
 
-import { BackgroundEffect, Carousel, Navigation } from "./Components";
+import { BackgroundEffect, Carousel, Footer, Navigation } from "./Components";
 
 const Dashboard = () => (
-  <Box w="100vw" h="100vh" overflow="hidden auto" position="relative">
-    <Navigation />
-    <Flex justify="center" pt="20px">
-      <Box w="80%" maxW="1000px">
-        <Carousel />
-      </Box>
-    </Flex>
+  <Flex
+    w="100vw"
+    h="100vh"
+    overflow="hidden auto"
+    position="relative"
+    flexDir="column"
+  >
+    <Box flex="1">
+      <Navigation />
+      <Flex justifyContent="center" pt="20px" pb="40px">
+        <Box w="60%">
+          <Carousel />
+        </Box>
+      </Flex>
+    </Box>
+    <Footer />
     <BackgroundEffect />
-  </Box>
+  </Flex>
 );
 
 export default Dashboard;

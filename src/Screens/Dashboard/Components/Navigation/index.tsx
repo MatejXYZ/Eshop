@@ -13,6 +13,7 @@ import SearchBar from "./SearchBar";
 
 import "./slide.css";
 import { LogoIcon } from "../../../../assets/svg";
+import colors from "../../../../colors";
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
@@ -60,12 +61,16 @@ const Navigation = () => {
         />
         <HStack spacing={["6px", null, null, "12px"]}>
           <Box minW={["40px", null, null, "60px"]}>
-            <LogoIcon style={{ transform: "rotate(8deg)" }} />
+            <LogoIcon
+              style={{ transform: "rotate(8deg)" }}
+              color={colors.black}
+            />
           </Box>
           <Box
             fontWeight="900"
             fontSize={["18px", null, null, "24px"]}
             userSelect="none"
+            color={colors.black}
           >
             SNEAKERS
           </Box>
@@ -105,7 +110,7 @@ const Navigation = () => {
                   <Flex
                     flex={isActive ? "2" : "1"}
                     bg={isActive ? "#555" : "transparent"}
-                    color={isActive ? "#eee" : "#113"}
+                    color={isActive ? "#eee" : colors.darkBlue}
                     key={id}
                     h="50px"
                     px="8px"
@@ -168,7 +173,7 @@ const Navigation = () => {
                         </Box>
                         {subCategory.items.map((item) => (
                           <Box
-                            color="#113"
+                            color={colors.darkBlue}
                             key={item.id}
                             cursor="pointer"
                             _hover={{ color: "#eee" }}

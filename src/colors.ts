@@ -5,7 +5,8 @@ const colors = {
   lightGray: "#757575",
   white: "#fff",
   darkWhite: "#b2b2b2",
-  contrastText: "#8f391f",
+  darkOrange: "#8f391f",
+  darkBlue: "#113",
 };
 
 export default colors;

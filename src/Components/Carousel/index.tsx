@@ -383,7 +383,7 @@ const Carousel: FC<CarouselProps> = ({
                   <Box
                     noOfLines={5}
                     fontSize="20px"
-                    color={colors.contrastText}
+                    color={colors.darkOrange}
                     lineHeight="1.125"
                   >
                     {description}

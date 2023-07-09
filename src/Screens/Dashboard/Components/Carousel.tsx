@@ -1,40 +1,39 @@
 import { useMemo } from "react";
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Spinner } from "@chakra-ui/react";
 
 import { Carousel as DefaultCarousel } from "../../../Components";
 
 import { useWorkingUrls } from "../../../hooks";
 
-import { URLS } from "../../../constants/carousel";
-
-import { getNextWord } from "../../../mockData";
+import { carouselUrls, getRandomStr } from "../../../mockData";
 
 const Carousel = () => {
-  const { urls } = useWorkingUrls(URLS);
+  const { urls } = useWorkingUrls(carouselUrls);
 
   const urlItems = useMemo(
     () =>
       urls?.map((item, index) => ({
         id: index,
         url: item,
-        title: `${getNextWord()} ${getNextWord()}`,
-        description: Array.from(Array(10))
-          .map(() => getNextWord())
-          .join(" ")
-          .toLowerCase()
-          .replace(/^\w/, (letter) => letter.toUpperCase()),
+        title: getRandomStr(2),
+        description: getRandomStr(10),
       })) ?? [],
     [urls]
   );
 
   return (
-    <Flex p="0 0" justifyContent="center">
+    <>
       {urlItems.length ? (
-        <DefaultCarousel items={urlItems} isCentered displayNavigationButtons />
+        <DefaultCarousel
+          items={urlItems}
+          isCentered
+          displayNavigationButtons
+          numberOfVisibleItems={1.6}
+        />
       ) : (
         <Spinner />
       )}
-    </Flex>
+    </>
   );
 };
 
