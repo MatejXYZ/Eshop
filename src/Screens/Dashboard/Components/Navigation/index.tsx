@@ -155,7 +155,12 @@ const Navigation = () => {
                 {navigationData
                   .find((item) => item.id === activeSection)
                   ?.subCategories.map((subCategory) => (
-                    <Flex flex="1" justify="center" maxW="400px">
+                    <Flex
+                      key={subCategory.id}
+                      flex="1"
+                      justify="center"
+                      maxW="400px"
+                    >
                       <VStack
                         key={subCategory.id}
                         align="start"
