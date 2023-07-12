@@ -80,7 +80,10 @@ const Carousel: FC<CarouselProps> = ({
   }, [animatedOffset, itemWidth, unanimatedOffset]);
 
   const checkRowEnding = useCallback(() => {
-    if (!isMouseDown && Math.abs(offset) > (items.length - 2) * itemWidth) {
+    if (
+      !isMouseDown &&
+      Math.abs(offset) - 10 > (items.length - 2) * itemWidth
+    ) {
       setOffset({
         unanimated: (offset < 0 ? 1 : -1) * itemWidth - animatedOffset,
         animated: animatedOffset,
@@ -218,13 +221,11 @@ const Carousel: FC<CarouselProps> = ({
 
   const [isTouching, setIsTouching] = useState(true);
 
-  const [touchX, setTouchX] = useState(0);
+  const [touchX, setTouchX] = useState<null | number>(null);
 
   useEffect(() => {
     const onTouchMove = (e: globalThis.TouchEvent) => {
       const { clientX } = e.touches[0];
-
-      recordShortDrag({ movementX: clientX - touchX });
 
       setTouchX(clientX);
 
@@ -255,7 +256,6 @@ const Carousel: FC<CarouselProps> = ({
     itemWidth,
     items.length,
     offset,
-    recordShortDrag,
     touchX,
   ]);
 
@@ -269,18 +269,10 @@ const Carousel: FC<CarouselProps> = ({
 
       setShortDrag({ count: 0, value: 0, direction: Orientation.right });
 
-      if (shortDrag?.value) {
-        // slide offset by one space
-        newOffset =
-          shortDrag.direction === Orientation.right
-            ? offset - itemWidth
-            : offset + itemWidth;
-      }
-
       // loop through item positions to find the closest one
       for (let i = -items.length; i <= items.length; i++) {
         if (newOffset <= (i + 0.5) * itemWidth) {
-          const dragLength = touchX - lInitialX;
+          const dragLength = touchX === null ? 0 : touchX - lInitialX;
 
           setOffset({
             unanimated: dragLength - animatedOffset,
@@ -305,7 +297,6 @@ const Carousel: FC<CarouselProps> = ({
     itemWidth,
     items.length,
     offset,
-    shortDrag,
     touchX,
   ]);
 
@@ -325,7 +316,11 @@ const Carousel: FC<CarouselProps> = ({
               unanimatedOffset - 2 * contentWidth + initialOffset
             }px)`}
             onTouchStart={(e) => {
-              setInitialX(e.touches[0].clientX - offset);
+              const { clientX } = e.touches[0];
+
+              setTouchX(clientX);
+
+              setInitialX(clientX - offset);
 
               setIsTouching(true);
             }}
