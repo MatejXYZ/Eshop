@@ -16,7 +16,7 @@ const BackgroundEffect: FC<BackgroundEffectProps> = ({ callback }) => {
       backdropFilter={isActive ? "blur(0.25rem) brightness(0.75)" : "none"}
       transition={isActive ? "backdrop-filter 1s" : "backdrop-filter 0.5s"}
       zIndex={isActive ? "1" : "-1"}
-      position="absolute"
+      position="fixed"
       w="100%"
       h="100%"
       onClick={() => {
