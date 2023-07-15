@@ -6,6 +6,8 @@ import NavigationButton from "./NavigationButton";
 import { Item, Orientation, padItems } from "./utils";
 import colors from "../../colors";
 
+import "./carousel.css";
+
 type CarouselProps = {
   items: Item[];
   numberOfVisibleItems?: number;
@@ -317,6 +319,7 @@ const Carousel: FC<CarouselProps> = ({
         w="full"
         overflow="hidden"
         position="relative"
+        className="carousel"
       >
         <Flex
           w={`${contentWidth}px`}

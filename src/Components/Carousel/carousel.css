@@ -1,0 +1,14 @@
+.navigation-button {
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.carousel:hover .navigation-button {
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .navigation-button {
+    opacity: 1;
+  }
+}
