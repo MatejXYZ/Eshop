@@ -56,6 +56,7 @@ const Navigation = () => {
         flex={activeSection ? ["0", "1"] : ["0", "3"]}
         opacity={activeSection ? "0" : "1"}
         transition="flex 0.25s, opacity 0.25s"
+        overflow="hidden"
       >
         <Box
           flexBasis={["10px", null, "25px", "50px"]}
@@ -97,9 +98,9 @@ const Navigation = () => {
             flexDirection="column"
             position="absolute"
             overflow="hidden"
-            minW={["200px", "250px"]}
+            minW={isSearchActive ? "0" : ["200px", "250px"]}
             w="full"
-            maxH={activeSection === null ? "50px" : "600px"}
+            maxH={activeSection === null ? "50px" : ["400px", "600px"]}
             transition="background-color 0.25s, max-height 0.25s"
           >
             <Flex justify="space-around" bg={colors.offWhite}>
@@ -125,6 +126,7 @@ const Navigation = () => {
                     align="center"
                     justify="center"
                     cursor="pointer"
+                    userSelect="none"
                   >
                     {title}
                   </Flex>
@@ -173,6 +175,7 @@ const Navigation = () => {
                           textTransform="capitalize"
                           fontSize={["14px", "16px"]}
                           whiteSpace="nowrap"
+                          userSelect="none"
                         >
                           {subCategory.title}
                         </Box>
@@ -202,7 +205,7 @@ const Navigation = () => {
         flex={
           isSearchActive
             ? { base: "5", xl: "3" }
-            : [activeSection ? "0" : "3", activeSection ? "1" : "3"]
+            : [activeSection ? "0" : "2", activeSection ? "1" : "3"]
         }
         opacity={activeSection ? "0" : "1"}
         alignSelf="stretch"

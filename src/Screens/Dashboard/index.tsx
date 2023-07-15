@@ -12,8 +12,8 @@ const Dashboard = () => (
   >
     <Box flex="1">
       <Navigation />
-      <Flex justifyContent="center" pt="20px" pb="40px">
-        <Box w="80%" maxW="960px">
+      <Flex justifyContent="center" pt={["15px", "20px"]} pb={["30px", "40px"]}>
+        <Box w={["full", null, "80%"]} maxW="960px">
           <Carousel />
         </Box>
       </Flex>

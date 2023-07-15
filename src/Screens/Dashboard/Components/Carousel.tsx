@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 
 import { Carousel as DefaultCarousel } from "../../../Components";
 
@@ -22,7 +22,7 @@ const Carousel = () => {
   );
 
   return (
-    <>
+    <Flex flexDir="column" align="center">
       {urlItems.length ? (
         <DefaultCarousel
           items={urlItems}
@@ -33,7 +33,7 @@ const Carousel = () => {
       ) : (
         <Spinner />
       )}
-    </>
+    </Flex>
   );
 };
 

@@ -31,6 +31,7 @@ const Footer = () => (
               lineHeight="1"
               fontFamily="'Anton'"
               cursor="pointer"
+              userSelect="none"
             >
               {item}
             </Box>
@@ -52,6 +53,7 @@ const Footer = () => (
                 lineHeight="1"
                 fontFamily="'Anton'"
                 cursor="pointer"
+                userSelect="none"
               >
                 {title}
               </Box>
@@ -61,6 +63,7 @@ const Footer = () => (
                     key={item}
                     lineHeight="1.25"
                     cursor="pointer"
+                    userSelect="none"
                     _hover={{
                       color: colors.white,
                     }}
@@ -77,6 +80,7 @@ const Footer = () => (
         {footerData.bottomMenu.map((item) => (
           <Box
             cursor="pointer"
+            userSelect="none"
             _hover={{
               color: colors.white,
             }}

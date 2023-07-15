@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Input } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, chakra } from "@chakra-ui/react";
 import { useCallback, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 
@@ -38,7 +38,14 @@ const SearchBar = () => {
   }, []);
 
   return (
-    <Flex
+    <chakra.form
+      onSubmit={(e) => {
+        e.preventDefault();
+
+        onMouseLeave();
+      }}
+      display="flex"
+      alignItems="center"
       rounded="full"
       w="64px"
       h="40px"
@@ -52,7 +59,6 @@ const SearchBar = () => {
       position="relative"
       borderColor={colors.gray} // NOTE - to be inherited by .search-bar-border
       overflow="hidden"
-      align="center"
       onMouseLeave={onMouseLeave}
       onMouseEnter={onMouseEnter}
       onTouchStart={onMouseEnter}
@@ -73,14 +79,13 @@ const SearchBar = () => {
           fontSize="14px"
           display="block"
           w="calc(100% - 25px)"
-          onBlur={onMouseLeave} // NOTE - gets called twice if using mouse
         />
       </Flex>
       <Button
         maxW="80px"
         minW="64px"
         _hover={{
-          minWidth: "80px",
+          minWidth: ["none", "80px"],
           bg: colors.gray,
         }}
         w="full"
@@ -100,7 +105,7 @@ const SearchBar = () => {
       >
         <SearchIcon />
       </Button>
-    </Flex>
+    </chakra.form>
   );
 };
 

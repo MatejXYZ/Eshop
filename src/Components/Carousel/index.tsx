@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Flex, Image } from "@chakra-ui/react";
+import { Box, Flex, Image, Spinner } from "@chakra-ui/react";
 
 import NavigationButton from "./NavigationButton";
 
@@ -300,116 +300,139 @@ const Carousel: FC<CarouselProps> = ({
     touchX,
   ]);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [loadedMedia, setLoadedMedia] = useState<(string | number)[]>([]);
+
+  useEffect(() => {
+    if (loadedMedia.length === 3 * items.length) setIsLoading(false);
+  }, [items.length, loadedMedia]);
+
   return (
-    <Flex ref={visibleAreaRef} w="full" overflow="hidden" position="relative">
+    <>
+      <Spinner display={isLoading ? "block" : "none"} />
       <Flex
-        w={`${contentWidth}px`}
-        userSelect="none"
-        transition={"transform 0.4s ease"}
-        transform={`translateX(${animatedOffset}px)`}
+        visibility={isLoading ? "collapse" : "visible"}
+        ref={visibleAreaRef}
+        w="full"
+        overflow="hidden"
+        position="relative"
       >
-        {[1, 2, 3].map((content) => (
-          <Flex
-            key={content}
-            w="full"
-            transform={`translateX(${
-              unanimatedOffset - 2 * contentWidth + initialOffset
-            }px)`}
-            onTouchStart={(e) => {
-              const { clientX } = e.touches[0];
+        <Flex
+          w={`${contentWidth}px`}
+          userSelect="none"
+          transition={"transform 0.4s ease"}
+          transform={`translateX(${animatedOffset}px)`}
+        >
+          {[1, 2, 3].map((content) => (
+            <Flex
+              key={content}
+              w="full"
+              transform={`translateX(${
+                unanimatedOffset - 2 * contentWidth + initialOffset
+              }px)`}
+              onTouchStart={(e) => {
+                const { clientX } = e.touches[0];
 
-              setTouchX(clientX);
+                setTouchX(clientX);
 
-              setInitialX(clientX - offset);
+                setInitialX(clientX - offset);
 
-              setIsTouching(true);
-            }}
-            onMouseDown={(e) => {
-              if (e.button !== 0) return;
+                setIsTouching(true);
+              }}
+              onMouseDown={(e) => {
+                if (e.button !== 0) return;
 
-              setInitialX(e.clientX - offset);
+                setInitialX(e.clientX - offset);
 
-              setIsMouseDown(true);
-            }}
-          >
-            {items.map(({ id, url, title, description }) => {
-              return (
-                <Flex
-                  key={id}
-                  w={`${itemWidth}px`}
-                  p="0 0.25rem"
-                  flexDir="column"
-                >
-                  <Box h={`calc(${itemWidth}px - 0.25rem)`}>
-                    <Image
-                      id={`image-${id}`}
-                      src={url}
-                      draggable={false}
-                      alt=""
-                      h="100%"
-                      w="100%"
-                      objectFit="cover"
-                      onError={() => {
-                        const video = document.createElement("video");
-                        video.autoplay = true;
-                        video.muted = true;
-                        video.loop = true;
-                        video.src = url;
-                        video.addEventListener("error", () => {});
-                        video.setAttribute(
-                          "style",
-                          "object-fit: cover; display: flex; width: 100%; height: 100%;"
-                        );
-                        const target = document.getElementById(`image-${id}`);
-                        target?.insertAdjacentElement("beforebegin", video);
-                        target?.remove();
-                      }}
-                    />
-                  </Box>
-                  <Box pl="2.5%">
-                    <Box
-                      lineHeight="1.25"
-                      wordBreak="break-all"
-                      noOfLines={2}
-                      textTransform="capitalize"
-                      fontSize={["20px", "28px"]}
-                      fontWeight="600"
-                      color={colors.darkOrange}
-                      pt={["5px", "10px"]}
-                      pb={["2.5px", "5px"]}
-                    >
-                      {title}
+                setIsMouseDown(true);
+              }}
+            >
+              {items.map(({ id, url, title, description }) => {
+                const finishMediaLoading = () =>
+                  setLoadedMedia((prev) => [...prev, id]);
+
+                return (
+                  <Flex
+                    key={id}
+                    w={`${itemWidth}px`}
+                    p="0 0.25rem"
+                    flexDir="column"
+                  >
+                    <Box h={`calc(${itemWidth}px - 0.25rem)`}>
+                      <Image
+                        id={`image-${id}`}
+                        src={url}
+                        draggable={false}
+                        alt=""
+                        h="100%"
+                        w="100%"
+                        objectFit="cover"
+                        onError={() => {
+                          const video = document.createElement("video");
+                          video.autoplay = true;
+                          video.muted = true;
+                          video.loop = true;
+                          video.src = url;
+                          video.addEventListener("error", () => {});
+                          video.setAttribute(
+                            "style",
+                            "object-fit: cover; display: flex; width: 100%; height: 100%;"
+                          );
+                          const target = document.getElementById(`image-${id}`);
+                          target?.insertAdjacentElement("beforebegin", video);
+                          target?.remove();
+                          video.oncanplay = finishMediaLoading;
+                          video.onerror = finishMediaLoading;
+                        }}
+                        onLoad={finishMediaLoading}
+                      />
                     </Box>
-                    <Box
-                      color={colors.black}
-                      noOfLines={5}
-                      fontSize={["14px", "20px"]}
-                      lineHeight="1.125"
-                    >
-                      {description}
+                    <Box pl="2.5%">
+                      <Box
+                        lineHeight="1.25"
+                        wordBreak="break-all"
+                        noOfLines={2}
+                        textTransform="capitalize"
+                        fontSize={["20px", "28px"]}
+                        fontWeight="600"
+                        color={colors.darkOrange}
+                        pt={["5px", "10px"]}
+                        pb={["2.5px", "5px"]}
+                      >
+                        {title}
+                      </Box>
+                      <Box
+                        color={colors.black}
+                        noOfLines={5}
+                        fontSize={["14px", "20px"]}
+                        lineHeight="1.125"
+                      >
+                        {description}
+                      </Box>
                     </Box>
-                  </Box>
-                </Flex>
-              );
-            })}
-          </Flex>
-        ))}
+                  </Flex>
+                );
+              })}
+            </Flex>
+          ))}
+        </Flex>
+        {!!displayNavigationButtons && (
+          <>
+            <NavigationButton
+              carouselItemWidth={itemWidth}
+              orientation={Orientation.left}
+              onClick={slideLeft}
+            />
+            <NavigationButton
+              carouselItemWidth={itemWidth}
+              orientation={Orientation.right}
+              onClick={slideRight}
+            />
+          </>
+        )}
       </Flex>
-      {!!displayNavigationButtons && (
-        <>
-          <NavigationButton
-            carouselItemWidth={itemWidth}
-            orientation={Orientation.left}
-            onClick={slideLeft}
-          />
-          <NavigationButton
-            carouselItemWidth={itemWidth}
-            orientation={Orientation.right}
-            onClick={slideRight}
-          />
-        </>
-      )}
-    </Flex>
+    </>
   );
 };
 
